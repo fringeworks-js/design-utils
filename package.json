@@ -9,7 +9,16 @@
     "ratio",
     "golden-ratio",
     "silver-ratio",
-    "unit"
+    "unit",
+    "modular-scale",
+    "fluid-typography",
+    "clamp",
+    "paper-size",
+    "css-variables",
+    "media-query",
+    "color-mix",
+    "easing",
+    "spring"
   ],
   "repository": {
     "type": "git",
