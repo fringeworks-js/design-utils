@@ -37,7 +37,7 @@ export default function createLinearEasing(
   }
 
   const points = indexes.map((index, i) => {
-    const value = format(values[index]);
+    const value = format(values[index]!);
     // 最初と最後の点は位置を省略できる (0% と 100%)
     if (i === 0 || i === indexes.length - 1) return `${value}`;
     return `${value} ${format((index / samples) * 100)}%`;
@@ -59,11 +59,12 @@ function simplify(values: readonly number[], tolerance: number) {
     const [start, end] = stack.pop()!;
     let maxError = -1;
     let maxIndex = -1;
+    const startValue = values[start]!;
+    const endValue = values[end]!;
     for (let i = start + 1; i < end; i++) {
       const expected =
-        values[start] +
-        ((values[end] - values[start]) * (i - start)) / (end - start);
-      const error = Math.abs(values[i] - expected);
+        startValue + ((endValue - startValue) * (i - start)) / (end - start);
+      const error = Math.abs(values[i]! - expected);
       if (error > maxError) {
         maxError = error;
         maxIndex = i;

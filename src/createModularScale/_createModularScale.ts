@@ -13,15 +13,16 @@ export default function _createModularScale(
   if (bases.length === 0 || bases.some((value) => !(value > 0))) {
     throw new RangeError('base must be positive numbers');
   }
+  // 上で空でないことを確認している
+  const first = bases[0]!;
   if (bases.length === 1) {
-    return (step) => bases[0] * ratio ** step;
+    return (step) => first * ratio ** step;
   }
   if (!(ratio > 1)) {
     throw new RangeError('ratio must be greater than 1 when base is an array');
   }
 
   // 2つ目以降の基準値を [base[0], base[0] * ratio) の範囲に移して並べる
-  const [first] = bases;
   const values = [first];
   for (const value of bases.slice(1)) {
     const exponent = Math.floor(Math.log(value / first) / Math.log(ratio));
@@ -38,6 +39,6 @@ export default function _createModularScale(
   const { length } = values;
   return (step) => {
     const index = ((step % length) + length) % length;
-    return values[index] * ratio ** Math.floor(step / length);
+    return values[index]! * ratio ** Math.floor(step / length);
   };
 }

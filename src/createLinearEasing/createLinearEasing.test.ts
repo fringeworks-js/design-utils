@@ -16,9 +16,9 @@ function evaluateLinear(css: string, t: number) {
         : Number(position.slice(0, -1)) / 100,
   }));
   const index = points.findIndex((point) => point.position >= t);
-  if (index <= 0) return points[0].value;
-  const a = points[index - 1];
-  const b = points[index];
+  if (index <= 0) return points[0]!.value;
+  const a = points[index - 1]!;
+  const b = points[index]!;
   return (
     a.value +
     ((b.value - a.value) * (t - a.position)) / (b.position - a.position)
