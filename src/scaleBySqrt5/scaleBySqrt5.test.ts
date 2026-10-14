@@ -14,13 +14,4 @@ describe('scaleBySqrt5', () => {
   it('1の場合', () => {
     expect(scaleBySqrt5(1)).toBeCloseTo(RATIO, 2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect([100].map(scaleBySqrt5.dataLast())).toEqual([scaleBySqrt5(100)]);
-      expect(scaleBySqrt5.dataLast({ mode: 'shrink' })(100)).toBe(
-        scaleBySqrt5(100, { mode: 'shrink' }),
-      );
-    });
-  });
 });

@@ -14,13 +14,9 @@ import type { ScaleByPlatinumOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByPlatinum = (value: number, options?: ScaleByPlatinumOptions) =>
-  _scaleByPlatinum(value, options);
-scaleByPlatinum.dataLast =
-  (options?: ScaleByPlatinumOptions) => (value: number) =>
-    _scaleByPlatinum(value, options);
-export default scaleByPlatinum;
-
-function _scaleByPlatinum(value: number, options?: ScaleByPlatinumOptions) {
+export default function scaleByPlatinum(
+  value: number,
+  options?: ScaleByPlatinumOptions,
+) {
   return scaleByRatio(value, PLATINUM_RATIO, options);
 }

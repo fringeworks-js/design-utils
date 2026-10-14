@@ -17,10 +17,4 @@ describe('scaleByGolden', () => {
     const result = scaleByGolden(1);
     expect(result).toBeCloseTo(GOLDEN_RATIO, 2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect(scaleByGolden.dataLast()(100)).toBeCloseTo(100 * GOLDEN_RATIO, 2);
-    });
-  });
 });

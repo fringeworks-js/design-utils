@@ -13,24 +13,12 @@ import type { ConvertUnitOptions, CssUnit } from './types';
  * @param options
  * @returns
  */
-const convertUnit = (
+export default function convertUnit(
   value: number,
   from: CssUnit,
   to: CssUnit,
   options: ConvertUnitOptions = {},
-) => _convertUnit(value, from, to, options);
-convertUnit.dataLast =
-  (from: CssUnit, to: CssUnit, options: ConvertUnitOptions = {}) =>
-  (value: number) =>
-    _convertUnit(value, from, to, options);
-export default convertUnit;
-
-function _convertUnit(
-  value: number,
-  from: CssUnit,
-  to: CssUnit,
-  options: ConvertUnitOptions,
-) {
+): number {
   const { decimals = DEFAULT_DECIMALS } = options;
   return round(
     (value * getPixelsPerUnit(from, options)) / getPixelsPerUnit(to, options),

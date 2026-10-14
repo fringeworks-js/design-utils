@@ -17,15 +17,4 @@ describe('scaleByHarmonic', () => {
   it('1の場合', () => {
     expect(scaleByHarmonic(1)).toBeCloseTo(RATIO, 2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect([100].map(scaleByHarmonic.dataLast())).toEqual([
-        scaleByHarmonic(100),
-      ]);
-      expect(scaleByHarmonic.dataLast({ mode: 'shrink' })(100)).toBe(
-        scaleByHarmonic(100, { mode: 'shrink' }),
-      );
-    });
-  });
 });

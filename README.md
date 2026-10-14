@@ -23,14 +23,6 @@ import scaleByGolden from '@fringeworks/design-utils/scaleByGolden';
 
 Nothing depends on the DOM, so you can also use it to generate design tokens at build time or on the server.
 
-### Data Last
-
-Functions with `dataLast` take every argument except the data first and return a function that receives the data. This is useful in pipelines and as a callback for methods such as `Array.prototype.map`. Functions that have `dataLast` show it alongside their signatures.
-
-```ts
-const fn = scaleByRatio.dataLast(16 / 9, { mode: 'shrink' });
-```
-
 ### Decimal places
 
 Functions that return numbers, or strings that contain numbers, round their results with the `decimals` option. Every function defaults to 3 decimal places.
@@ -63,7 +55,6 @@ Some generated values only work in relatively recent browsers, such as `cqi` fro
 
 ```ts
 scaleByRatio(value: number, ratio: number, options?: ScaleByRatioOptions): number
-scaleByRatio.dataLast(ratio: number, options?: ScaleByRatioOptions): (value: number) => number
 ```
 
 Returns the value that is in the ratio `ratio` to `value`. By default, this is `value × ratio`.
@@ -82,25 +73,15 @@ scaleByRatio(100, 16 / 9, { mode: 'shrink' }); // 56.25
 
 ```ts
 scaleByBronze(value: number, options?: ScaleByRatioOptions): number
-scaleByBronze.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByDouble(value: number, options?: ScaleByRatioOptions): number
-scaleByDouble.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByGolden(value: number, options?: ScaleByRatioOptions): number
-scaleByGolden.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByHarmonic(value: number, options?: ScaleByRatioOptions): number
-scaleByHarmonic.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByPlatinum(value: number, options?: ScaleByRatioOptions): number
-scaleByPlatinum.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySilver(value: number, options?: ScaleByRatioOptions): number
-scaleBySilver.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt2(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt2.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt3(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt3.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt5(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt5.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByYamato(value: number, options?: ScaleByRatioOptions): number
-scaleByYamato.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 ```
 
 Call `scaleByRatio` with ratios that are common in design and architecture. The options are the same as for `scaleByRatio`.
@@ -144,7 +125,6 @@ scaleByGolden(100, { mode: 'shrink' }); // 61.803
 
 ```ts
 convertUnit(value: number, from: CssUnit, to: CssUnit, options?: ConvertUnitOptions): number
-convertUnit.dataLast(from: CssUnit, to: CssUnit, options?: ConvertUnitOptions): (value: number) => number
 ```
 
 Converts between CSS length units. Absolute units follow the CSS definition (1in = 96px = 72pt). `Q` is a quarter millimeter, so you can convert type sizes and letter feeds from Japanese phototypesetting and DTP (kyu and ha) to CSS values.
@@ -152,7 +132,7 @@ Converts between CSS length units. Absolute units follow the CSS definition (1in
 ```ts
 convertUnit(24, 'px', 'rem'); // 1.5
 convertUnit(13, 'Q', 'pt'); // 9.213
-[12, 24].map(convertUnit.dataLast('px', 'rem')); // [0.75, 1.5]
+[12, 24].map((value) => convertUnit(value, 'px', 'rem')); // [0.75, 1.5]
 ```
 
 | Option          | Type     | Description                                                      |

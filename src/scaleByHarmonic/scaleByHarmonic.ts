@@ -14,13 +14,9 @@ import type { ScaleByHarmonicOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByHarmonic = (value: number, options?: ScaleByHarmonicOptions) =>
-  _scaleByHarmonic(value, options);
-scaleByHarmonic.dataLast =
-  (options?: ScaleByHarmonicOptions) => (value: number) =>
-    _scaleByHarmonic(value, options);
-export default scaleByHarmonic;
-
-function _scaleByHarmonic(value: number, options?: ScaleByHarmonicOptions) {
+export default function scaleByHarmonic(
+  value: number,
+  options?: ScaleByHarmonicOptions,
+) {
   return scaleByRatio(value, HARMONIC_RATIO, options);
 }

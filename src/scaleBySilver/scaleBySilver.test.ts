@@ -14,13 +14,4 @@ describe('scaleBySilver', () => {
   it('1の場合', () => {
     expect(scaleBySilver(1)).toBeCloseTo(RATIO, 2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect([100].map(scaleBySilver.dataLast())).toEqual([scaleBySilver(100)]);
-      expect(scaleBySilver.dataLast({ mode: 'shrink' })(100)).toBe(
-        scaleBySilver(100, { mode: 'shrink' }),
-      );
-    });
-  });
 });

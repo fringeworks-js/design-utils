@@ -17,15 +17,4 @@ describe('scaleByPlatinum', () => {
   it('1の場合', () => {
     expect(scaleByPlatinum(1)).toBeCloseTo(RATIO, 2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect([100].map(scaleByPlatinum.dataLast())).toEqual([
-        scaleByPlatinum(100),
-      ]);
-      expect(scaleByPlatinum.dataLast({ mode: 'shrink' })(100)).toBe(
-        scaleByPlatinum(100, { mode: 'shrink' }),
-      );
-    });
-  });
 });

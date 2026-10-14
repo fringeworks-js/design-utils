@@ -8,18 +8,7 @@ import type { ScaleByRatioOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByRatio = (
-  value: number,
-  ratio: number,
-  options: ScaleByRatioOptions = {},
-) => _scaleByRatio(value, ratio, options);
-scaleByRatio.dataLast =
-  (ratio: number, options: ScaleByRatioOptions = {}) =>
-  (value: number) =>
-    _scaleByRatio(value, ratio, options);
-export default scaleByRatio;
-
-function _scaleByRatio(
+export default function scaleByRatio(
   value: number,
   ratio: number,
   options: ScaleByRatioOptions = {},

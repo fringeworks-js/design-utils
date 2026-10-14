@@ -14,12 +14,9 @@ import type { ScaleBySilverOptions } from './types';
  * @param options
  * @returns
  */
-const scaleBySilver = (value: number, options?: ScaleBySilverOptions) =>
-  _scaleBySilver(value, options);
-scaleBySilver.dataLast = (options?: ScaleBySilverOptions) => (value: number) =>
-  _scaleBySilver(value, options);
-export default scaleBySilver;
-
-function _scaleBySilver(value: number, options?: ScaleBySilverOptions) {
+export default function scaleBySilver(
+  value: number,
+  options?: ScaleBySilverOptions,
+) {
   return scaleByRatio(value, SILVER_RATIO, options);
 }

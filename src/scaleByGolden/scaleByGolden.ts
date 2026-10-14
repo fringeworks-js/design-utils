@@ -16,12 +16,9 @@ import type { ScaleByGoldenOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByGolden = (value: number, options?: ScaleByGoldenOptions) =>
-  _scaleByGolden(value, options);
-scaleByGolden.dataLast = (options?: ScaleByGoldenOptions) => (value: number) =>
-  _scaleByGolden(value, options);
-export default scaleByGolden;
-
-function _scaleByGolden(value: number, options?: ScaleByGoldenOptions) {
+export default function scaleByGolden(
+  value: number,
+  options?: ScaleByGoldenOptions,
+) {
   return scaleByRatio(value, GOLDEN_RATIO, options);
 }

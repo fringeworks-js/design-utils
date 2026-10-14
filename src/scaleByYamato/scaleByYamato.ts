@@ -15,12 +15,9 @@ import type { ScaleByYamatoOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByYamato = (value: number, options?: ScaleByYamatoOptions) =>
-  _scaleByYamato(value, options);
-scaleByYamato.dataLast = (options?: ScaleByYamatoOptions) => (value: number) =>
-  _scaleByYamato(value, options);
-export default scaleByYamato;
-
-function _scaleByYamato(value: number, options?: ScaleByYamatoOptions) {
+export default function scaleByYamato(
+  value: number,
+  options?: ScaleByYamatoOptions,
+) {
   return scaleByRatio(value, YAMATO_RATIO, options);
 }

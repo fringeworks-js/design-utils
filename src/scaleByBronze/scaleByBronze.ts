@@ -13,12 +13,9 @@ import type { ScaleByBronzeOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByBronze = (value: number, options?: ScaleByBronzeOptions) =>
-  _scaleByBronze(value, options);
-scaleByBronze.dataLast = (options?: ScaleByBronzeOptions) => (value: number) =>
-  _scaleByBronze(value, options);
-export default scaleByBronze;
-
-function _scaleByBronze(value: number, options?: ScaleByBronzeOptions) {
+export default function scaleByBronze(
+  value: number,
+  options?: ScaleByBronzeOptions,
+) {
   return scaleByRatio(value, BRONZE_RATIO, options);
 }

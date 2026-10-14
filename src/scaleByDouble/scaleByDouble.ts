@@ -13,12 +13,9 @@ import type { ScaleByDoubleOptions } from './types';
  * @param options
  * @returns
  */
-const scaleByDouble = (value: number, options?: ScaleByDoubleOptions) =>
-  _scaleByDouble(value, options);
-scaleByDouble.dataLast = (options?: ScaleByDoubleOptions) => (value: number) =>
-  _scaleByDouble(value, options);
-export default scaleByDouble;
-
-function _scaleByDouble(value: number, options?: ScaleByDoubleOptions) {
+export default function scaleByDouble(
+  value: number,
+  options?: ScaleByDoubleOptions,
+) {
   return scaleByRatio(value, DOUBLE_RATIO, options);
 }

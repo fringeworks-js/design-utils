@@ -23,14 +23,6 @@ import scaleByGolden from '@fringeworks/design-utils/scaleByGolden';
 
 DOM には依存しないため、ビルド時のデザイントークンの生成やサーバーサイドでも使えます。
 
-### Data Last
-
-`dataLast` を持つ関数は、データ以外の引数を先に受け取り、データを受け取る関数を返します。パイプライン処理や、`Array.prototype.map` などのコールバックに渡す場合に使えます。`dataLast` を持つ関数は、シグネチャに `dataLast` を併記しています。
-
-```ts
-const fn = scaleByRatio.dataLast(16 / 9, { mode: 'shrink' });
-```
-
 ### 小数点以下の桁数
 
 数値を返す関数と、数値を含む文字列を返す関数は、`decimals` オプションで結果を丸めます。デフォルトはどの関数も小数点以下 3 桁です。
@@ -63,7 +55,6 @@ const fn = scaleByRatio.dataLast(16 / 9, { mode: 'shrink' });
 
 ```ts
 scaleByRatio(value: number, ratio: number, options?: ScaleByRatioOptions): number
-scaleByRatio.dataLast(ratio: number, options?: ScaleByRatioOptions): (value: number) => number
 ```
 
 `value` に対して `ratio` の比率になる値を返します。デフォルトでは `value × ratio` です。
@@ -82,25 +73,15 @@ scaleByRatio(100, 16 / 9, { mode: 'shrink' }); // 56.25
 
 ```ts
 scaleByBronze(value: number, options?: ScaleByRatioOptions): number
-scaleByBronze.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByDouble(value: number, options?: ScaleByRatioOptions): number
-scaleByDouble.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByGolden(value: number, options?: ScaleByRatioOptions): number
-scaleByGolden.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByHarmonic(value: number, options?: ScaleByRatioOptions): number
-scaleByHarmonic.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByPlatinum(value: number, options?: ScaleByRatioOptions): number
-scaleByPlatinum.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySilver(value: number, options?: ScaleByRatioOptions): number
-scaleBySilver.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt2(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt2.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt3(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt3.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleBySqrt5(value: number, options?: ScaleByRatioOptions): number
-scaleBySqrt5.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 scaleByYamato(value: number, options?: ScaleByRatioOptions): number
-scaleByYamato.dataLast(options?: ScaleByRatioOptions): (value: number) => number
 ```
 
 デザインや建築でよく使われる比率で `scaleByRatio` を呼び出します。オプションは `scaleByRatio` と同じです。
@@ -144,7 +125,6 @@ scaleByGolden(100, { mode: 'shrink' }); // 61.803
 
 ```ts
 convertUnit(value: number, from: CssUnit, to: CssUnit, options?: ConvertUnitOptions): number
-convertUnit.dataLast(from: CssUnit, to: CssUnit, options?: ConvertUnitOptions): (value: number) => number
 ```
 
 CSS の長さの単位を変換します。絶対単位は CSS の定義（1in = 96px = 72pt）に従います。`Q` は 1/4mm で、写植・DTP の級数や歯送りの値を CSS の値に変換できます。
@@ -152,7 +132,7 @@ CSS の長さの単位を変換します。絶対単位は CSS の定義（1in =
 ```ts
 convertUnit(24, 'px', 'rem'); // 1.5
 convertUnit(13, 'Q', 'pt'); // 9.213
-[12, 24].map(convertUnit.dataLast('px', 'rem')); // [0.75, 1.5]
+[12, 24].map((value) => convertUnit(value, 'px', 'rem')); // [0.75, 1.5]
 ```
 
 | オプション      | 型       | 説明                                                           |

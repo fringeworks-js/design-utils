@@ -25,10 +25,4 @@ describe('convertUnit', () => {
     expect(convertUnit(1, 'px', 'mm')).toBe(0.265);
     expect(convertUnit(1, 'px', 'mm', { decimals: 5 })).toBe(0.26458);
   });
-
-  it('dataLast', () => {
-    expect([12, 24].map(convertUnit.dataLast('px', 'rem'))).toEqual([
-      0.75, 1.5,
-    ]);
-  });
 });

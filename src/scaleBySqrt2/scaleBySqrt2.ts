@@ -13,12 +13,9 @@ import type { ScaleBySqrt2Options } from './types';
  * @param options
  * @returns
  */
-const scaleBySqrt2 = (value: number, options?: ScaleBySqrt2Options) =>
-  _scaleBySqrt2(value, options);
-scaleBySqrt2.dataLast = (options?: ScaleBySqrt2Options) => (value: number) =>
-  _scaleBySqrt2(value, options);
-export default scaleBySqrt2;
-
-function _scaleBySqrt2(value: number, options?: ScaleBySqrt2Options) {
+export default function scaleBySqrt2(
+  value: number,
+  options?: ScaleBySqrt2Options,
+) {
   return scaleByRatio(value, SQRT2_RATIO, options);
 }

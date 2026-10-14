@@ -23,7 +23,8 @@ export default function getPaperSize(
     decimals = DEFAULT_DECIMALS,
   } = options;
   const { width, height } = PAPER_SIZES[name];
-  const convert = convertUnit.dataLast('mm', unit, { decimals });
+  const convert = (value: number) =>
+    convertUnit(value, 'mm', unit, { decimals });
   return orientation === 'landscape'
     ? { width: convert(height), height: convert(width) }
     : { width: convert(width), height: convert(height) };

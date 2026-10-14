@@ -26,10 +26,4 @@ describe('scaleByRatio', () => {
       expect(scaleByRatio(100, 1.618, { decimals: 0 })).toBe(162);
     });
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect(scaleByRatio.dataLast(2)(100)).toBe(200);
-    });
-  });
 });

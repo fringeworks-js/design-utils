@@ -12,13 +12,4 @@ describe('scaleByDouble', () => {
   it('1の場合', () => {
     expect(scaleByDouble(1)).toBe(2);
   });
-
-  describe('dataLast', () => {
-    it('基本動作', () => {
-      expect([100].map(scaleByDouble.dataLast())).toEqual([scaleByDouble(100)]);
-      expect(scaleByDouble.dataLast({ mode: 'shrink' })(100)).toBe(
-        scaleByDouble(100, { mode: 'shrink' }),
-      );
-    });
-  });
 });
