@@ -1,4 +1,4 @@
-export type ModularScaleOptions = {
+export type CreateModularScaleOptions = {
   /**
    * 基準値\
    * 配列の場合は、複数の基準値を組み合わせたスケール (double stranded) になる

@@ -1,10 +1,16 @@
-export type ColorScaleOptions = {
+/**
+ * `createColorScale` の既定の段階
+ */
+export type DefaultColorScaleStep =
+  50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
+
+export type CreateColorScaleOptions<S extends number = number> = {
   /**
    * 作る段階\
    * `0` が `light`、`baseStep` が元の色、`1000` が `dark` になる
    * @default [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
    */
-  steps?: readonly number[];
+  steps?: readonly S[];
 
   /**
    * 元の色をそのまま使う段階

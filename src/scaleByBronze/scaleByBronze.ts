@@ -2,12 +2,10 @@ import { BRONZE_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleByBronzeOptions } from './types';
 
 /**
- * valueに対して青銅比になる値を返す\
+ * `value` に対して青銅比になる値を返す
  *
- * 青銅比 (≈ 3.303)\
- * 縦長、横長のデザインに利用される比率
- *
- * - ゴシック建築の尖塔
+ * 青銅比 ((3 + √13) / 2 ≈ 3.303)\
+ * 貴金属比 (x² = nx + 1 の正の解) の n = 3 の値
  *
  * @param value
  * @param options

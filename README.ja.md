@@ -25,7 +25,7 @@ DOM には依存しないため、ビルド時のデザイントークンの生�
 
 ### 小数点以下の桁数
 
-数値を返す関数と、数値を含む文字列を返す関数は、`decimals` オプションで結果を丸めます。デフォルトはどの関数も小数点以下 3 桁です。
+数値を返す関数と、数値を含む文字列を返す関数は、`decimals` オプションで結果を丸めます。デフォルトはどの関数も小数点以下 3 桁です。`decimals` は整数に切り捨て、0〜100 の範囲に収めます。
 
 ### 作成する CSS の対応ブラウザー
 
@@ -37,19 +37,28 @@ DOM には依存しないため、ビルド時のデザイントークンの生�
 
 ### 比率
 
-| 関数                                   | 説明                                       |
-| -------------------------------------- | ------------------------------------------ |
-| `scaleByRatio(value, ratio, options?)` | 値に比率を掛けた値（または割った値）を返す |
-| `scaleByBronze(value, options?)`       | 青銅比（≈ 3.303）の値を返す                |
-| `scaleByDouble(value, options?)`       | 1:2 の値を返す                             |
-| `scaleByGolden(value, options?)`       | 黄金比（≈ 1.618）の値を返す                |
-| `scaleByHarmonic(value, options?)`     | 調和比（4:3 ≈ 1.333）の値を返す            |
-| `scaleByPlatinum(value, options?)`     | 白金比（≈ 1.325）の値を返す                |
-| `scaleBySilver(value, options?)`       | 白銀比（1 + √2 ≈ 2.414）の値を返す         |
-| `scaleBySqrt2(value, options?)`        | √2 比（≈ 1.414）の値を返す                 |
-| `scaleBySqrt3(value, options?)`        | √3 比（≈ 1.732）の値を返す                 |
-| `scaleBySqrt5(value, options?)`        | √5 比（≈ 2.236）の値を返す                 |
-| `scaleByYamato(value, options?)`       | 大和比（√2 比と同じ）の値を返す            |
+| 関数                                    | 説明                                           |
+| --------------------------------------- | ---------------------------------------------- |
+| `scaleByRatio(value, ratio, options?)`  | 値に比率を掛けた値（または割った値）を返す     |
+| `scaleByBronze(value, options?)`        | 青銅比（≈ 3.303）の値を返す                    |
+| `scaleByDouble(value, options?)`        | 1:2 の値を返す                                 |
+| `scaleByGolden(value, options?)`        | 黄金比（≈ 1.618）の値を返す                    |
+| `scaleByHarmonic(value, options?)`      | 調和比（4:3 ≈ 1.333）の値を返す                |
+| `scaleByMajorSecond(value, options?)`   | 長2度の比（9:8 = 1.125）の値を返す             |
+| `scaleByMajorThird(value, options?)`    | 長3度の比（5:4 = 1.25）の値を返す              |
+| `scaleByMinorThird(value, options?)`    | 短3度の比（6:5 = 1.2）の値を返す               |
+| `scaleByPerfectFifth(value, options?)`  | 完全5度の比（3:2 = 1.5）の値を返す             |
+| `scaleByPerfectFourth(value, options?)` | 完全4度の比（調和比と同じ）の値を返す          |
+| `scaleByPhoto(value, options?)`         | 写真の比（3:2 = 1.5）の値を返す                |
+| `scaleByPlastic(value, options?)`       | プラスチック数の比（≈ 1.325）の値を返す        |
+| `scaleByPlatinum(value, options?)`      | 白金比（√3 比と同じ）の値を返す                |
+| `scaleBySilver(value, options?)`        | 白銀比（1 + √2 ≈ 2.414）の値を返す             |
+| `scaleBySqrt2(value, options?)`         | √2 比（≈ 1.414）の値を返す                     |
+| `scaleBySqrt3(value, options?)`         | √3 比（≈ 1.732）の値を返す                     |
+| `scaleBySqrt5(value, options?)`         | √5 比（≈ 2.236）の値を返す                     |
+| `scaleByUltrawide(value, options?)`     | ウルトラワイドの比（21:9 ≈ 2.333）の値を返す   |
+| `scaleByWidescreen(value, options?)`    | ワイドスクリーンの比（16:9 ≈ 1.778）の値を返す |
+| `scaleByYamato(value, options?)`        | 大和比（√2 比と同じ）の値を返す                |
 
 #### `scaleByRatio`
 
@@ -76,11 +85,20 @@ scaleByBronze(value: number, options?: ScaleByRatioOptions): number
 scaleByDouble(value: number, options?: ScaleByRatioOptions): number
 scaleByGolden(value: number, options?: ScaleByRatioOptions): number
 scaleByHarmonic(value: number, options?: ScaleByRatioOptions): number
+scaleByMajorSecond(value: number, options?: ScaleByRatioOptions): number
+scaleByMajorThird(value: number, options?: ScaleByRatioOptions): number
+scaleByMinorThird(value: number, options?: ScaleByRatioOptions): number
+scaleByPerfectFifth(value: number, options?: ScaleByRatioOptions): number
+scaleByPerfectFourth(value: number, options?: ScaleByRatioOptions): number
+scaleByPhoto(value: number, options?: ScaleByRatioOptions): number
+scaleByPlastic(value: number, options?: ScaleByRatioOptions): number
 scaleByPlatinum(value: number, options?: ScaleByRatioOptions): number
 scaleBySilver(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt2(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt3(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt5(value: number, options?: ScaleByRatioOptions): number
+scaleByUltrawide(value: number, options?: ScaleByRatioOptions): number
+scaleByWidescreen(value: number, options?: ScaleByRatioOptions): number
 scaleByYamato(value: number, options?: ScaleByRatioOptions): number
 ```
 
@@ -91,27 +109,77 @@ scaleByGolden(100); // 161.803
 scaleByGolden(100, { mode: 'shrink' }); // 61.803
 ```
 
+#### 用途から選ぶ
+
+Web での主な用途が決まっている比率を、用途ごとにまとめています。「〜とされる」と書いたものは、よく言われるものの根拠が慣習や印象にとどまるものです。
+
+**文字サイズのスケール**（`createModularScale` や `createFluidScale` の `ratio` に定数を渡す）
+
+| 関数                                      | 比      | 主な用途                                                     | 印象                           |
+| ----------------------------------------- | ------- | ------------------------------------------------------------ | ------------------------------ |
+| `scaleByMajorSecond`                      | 1.125   | ドキュメント、管理画面など情報量の多い UI、モバイル          | 控えめ、落ち着いている         |
+| `scaleByMinorThird`                       | 1.2     | アプリの UI、ダッシュボード、モバイル                        | 控えめ、実用的                 |
+| `scaleByMajorThird`                       | 1.25    | ブログ、一般的なサイト。ツールの既定値になっていることが多い | 標準的                         |
+| `scaleByPerfectFourth`・`scaleByHarmonic` | ≈ 1.333 | コーポレートサイト、デスクトップ向けの記事                   | メリハリがある                 |
+| `scaleBySqrt2`                            | ≈ 1.414 | 1.333 と 1.5 の中間の段差がほしいとき                        |                                |
+| `scaleByPerfectFifth`                     | 1.5     | LP、マーケティングページ、ポートフォリオ                     | 強い                           |
+| `scaleByGolden`                           | ≈ 1.618 | 見出しを大胆に見せたい、ビジュアル重視のページ               | 大胆。調和が取れているとされる |
+
+画面が小さいほど小さい比、大きいほど大きい比を使うことが多く、`createFluidScale` で幅に応じて切り替えられます（例: モバイルは `MINOR_THIRD_RATIO`、デスクトップは `PERFECT_FOURTH_RATIO`）。
+
+**縦横比**
+
+| 関数                            | 比   | 主な用途                                                             |
+| ------------------------------- | ---- | -------------------------------------------------------------------- |
+| `scaleByWidescreen`             | 16:9 | 動画の埋め込み（YouTube など）、ヒーロー画像、スライド               |
+| `scaleByHarmonic`               | 4:3  | スマートフォンのカメラの標準の縦横比。ユーザーが投稿した写真の表示枠 |
+| `scaleByPhoto`                  | 3:2  | 一眼レフ・ミラーレスカメラの写真、商品写真やギャラリー               |
+| `scaleByUltrawide`              | 21:9 | 映画風の横長のバナーやビジュアル                                     |
+| `scaleBySqrt2`・`scaleByYamato` | 1:√2 | 印刷用のレイアウト（`@page`）、PDF のサムネイル                      |
+
+**余白・レイアウト**
+
+| 関数                              | 主な用途                                                                                        |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `scaleByDouble`                   | 4・8・16・32 と倍々に増やす余白のスケール（8pt グリッドなど）                                   |
+| `scaleByPerfectFifth`             | 本文の行の高さ（WCAG 1.4.12 は、行の高さを文字サイズの 1.5 倍にしても崩れないことを求めている） |
+| `scaleByGolden`                   | 2カラムの分割（メインとサイドバーを 61.8 : 38.2 にするなど）                                    |
+| `scaleBySqrt3`・`scaleByPlatinum` | 六角形のグリッドやアイソメトリックのイラストの計算                                              |
+
+**由来を重視して選ぶ**
+
+`scaleByYamato` は日本の建築やキャラクターデザインで使われ、日本人になじみやすく安定した印象を与えるとされます。`scaleBySilver`・`scaleByBronze`・`scaleBySqrt5`・`scaleByPlastic` は Web での決まった用途はなく、数学的な性質や建築（プラスチック数は建築家 Dom Hans van der Laan の寸法体系）に由来する比率です。
+
 #### 定数
 
-| 定数             | 説明                           |
-| ---------------- | ------------------------------ |
-| `GOLDEN_RATIO`   | 黄金比（≈ 1.618）              |
-| `SILVER_RATIO`   | 白銀比（1 + √2 ≈ 2.414）       |
-| `BRONZE_RATIO`   | 青銅比（≈ 3.303）              |
-| `PLATINUM_RATIO` | 白金比（≈ 1.325）              |
-| `SQRT2_RATIO`    | √2 比（≈ 1.414）               |
-| `SQRT3_RATIO`    | √3 比（≈ 1.732）               |
-| `SQRT5_RATIO`    | √5 比（≈ 2.236）               |
-| `YAMATO_RATIO`   | 大和比（`SQRT2_RATIO` と同じ） |
-| `HARMONIC_RATIO` | 調和比（4:3 ≈ 1.333）          |
-| `DOUBLE_RATIO`   | 1:2                            |
+| 定数                   | 説明                                   |
+| ---------------------- | -------------------------------------- |
+| `GOLDEN_RATIO`         | 黄金比（≈ 1.618）                      |
+| `SILVER_RATIO`         | 白銀比（1 + √2 ≈ 2.414）               |
+| `BRONZE_RATIO`         | 青銅比（≈ 3.303）                      |
+| `PLATINUM_RATIO`       | 白金比（`SQRT3_RATIO` と同じ）         |
+| `PLASTIC_RATIO`        | プラスチック数の比（≈ 1.325）          |
+| `SQRT2_RATIO`          | √2 比（≈ 1.414）                       |
+| `SQRT3_RATIO`          | √3 比（≈ 1.732）                       |
+| `SQRT5_RATIO`          | √5 比（≈ 2.236）                       |
+| `YAMATO_RATIO`         | 大和比（`SQRT2_RATIO` と同じ）         |
+| `HARMONIC_RATIO`       | 調和比（4:3 ≈ 1.333）                  |
+| `DOUBLE_RATIO`         | 1:2                                    |
+| `MAJOR_SECOND_RATIO`   | 長2度の比（9:8 = 1.125）               |
+| `MINOR_THIRD_RATIO`    | 短3度の比（6:5 = 1.2）                 |
+| `MAJOR_THIRD_RATIO`    | 長3度の比（5:4 = 1.25）                |
+| `PERFECT_FOURTH_RATIO` | 完全4度の比（`HARMONIC_RATIO` と同じ） |
+| `PERFECT_FIFTH_RATIO`  | 完全5度の比（3:2 = 1.5）               |
+| `WIDESCREEN_RATIO`     | ワイドスクリーンの比（16:9 ≈ 1.778）   |
+| `PHOTO_RATIO`          | 写真の比（3:2 = 1.5）                  |
+| `ULTRAWIDE_RATIO`      | ウルトラワイドの比（21:9 ≈ 2.333）     |
 
 #### 型
 
-| 型                                                                                                                                                                                                                                              | 説明                         |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `ScaleByRatioOptions`                                                                                                                                                                                                                           | `scaleByRatio` のオプション  |
-| `ScaleByBronzeOptions`、`ScaleByDoubleOptions`、`ScaleByGoldenOptions`、`ScaleByHarmonicOptions`、`ScaleByPlatinumOptions`、`ScaleBySilverOptions`、`ScaleBySqrt2Options`、`ScaleBySqrt3Options`、`ScaleBySqrt5Options`、`ScaleByYamatoOptions` | `ScaleByRatioOptions` と同じ |
+| 型                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | 説明                         |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `ScaleByRatioOptions`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `scaleByRatio` のオプション  |
+| `ScaleByBronzeOptions`、`ScaleByDoubleOptions`、`ScaleByGoldenOptions`、`ScaleByHarmonicOptions`、`ScaleByMajorSecondOptions`、`ScaleByMajorThirdOptions`、`ScaleByMinorThirdOptions`、`ScaleByPerfectFifthOptions`、`ScaleByPerfectFourthOptions`、`ScaleByPhotoOptions`、`ScaleByPlasticOptions`、`ScaleByPlatinumOptions`、`ScaleBySilverOptions`、`ScaleBySqrt2Options`、`ScaleBySqrt3Options`、`ScaleBySqrt5Options`、`ScaleByUltrawideOptions`、`ScaleByWidescreenOptions`、`ScaleByYamatoOptions` | `ScaleByRatioOptions` と同じ |
 
 ### 単位
 
@@ -193,12 +261,12 @@ convertLeadingToLineHeight(24, 16); // 1.5
 #### `createModularScale`
 
 ```ts
-createModularScale(options?: ModularScaleOptions): (step: number) => number
+createModularScale(options?: CreateModularScaleOptions): (step: number) => number
 ```
 
 モジュラースケールの関数を作ります。返す関数は段階（`step`）を受け取り、`base × ratio ^ step` を返します。
 
-`base` に配列を指定すると、複数の基準値を組み合わせたスケール（double stranded）になります。各基準値から作ったスケールを1つに合わせ、`base` の最初の値を段階 `0` として、小さい順に段階を振ります。
+`base` に配列を指定すると、複数の基準値を組み合わせたスケール（double stranded）になります。各基準値から作ったスケールを1つに合わせ、`base` の最初の値を段階 `0` として、小さい順に段階を振ります。この場合、返す関数に渡せる段階は整数だけです。
 
 ```ts
 const scale = createModularScale({ ratio: HARMONIC_RATIO });
@@ -210,19 +278,19 @@ const double = createModularScale({ base: [16, 24], ratio: 2 });
 [0, 1, 2, 3].map(double); // [16, 24, 32, 48]
 ```
 
-| オプション  | 型                            | 説明                                                                          |
-| ----------- | ----------------------------- | ----------------------------------------------------------------------------- |
-| `base?`     | `number \| readonly number[]` | 基準値。配列の場合は複数の基準値を組み合わせる。デフォルトは `16`             |
-| `ratio?`    | `number`                      | 比率。`base` が配列の場合は 1 より大きい値にする。デフォルトは `GOLDEN_RATIO` |
-| `decimals?` | `number`                      | 小数点以下の桁数。デフォルトは `3`                                            |
+| オプション  | 型                            | 説明                                                                                    |
+| ----------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `base?`     | `number \| readonly number[]` | 基準値。配列の場合は複数の基準値を組み合わせる。デフォルトは `16`                       |
+| `ratio?`    | `number`                      | 比率。正の数で、`base` が配列の場合は 1 より大きい値にする。デフォルトは `GOLDEN_RATIO` |
+| `decimals?` | `number`                      | 小数点以下の桁数。デフォルトは `3`                                                      |
 
 #### `createFluidValue`
 
 ```ts
-createFluidValue(min: number, max: number, options?: FluidValueOptions): string
+createFluidValue(min: number, max: number, options?: CreateFluidValueOptions): string
 ```
 
-画面（またはコンテナー）の幅に応じて `min` から `max` まで変化する値を、CSS の `clamp()` の文字列で返します。`min` と `max` はデザインカンプの値をそのまま使えるように px で指定します。`min` が `max` より大きい場合は、幅が広がるほど小さくなる値になります。
+画面（またはコンテナー）の幅に応じて `min` から `max` まで変化する値を、CSS の `clamp()` の文字列で返します。`min` と `max` はデザインカンプの値をそのまま使えるように px で指定します。`min` が `max` より大きい場合は、幅が広がるほど小さくなる値になります。`min` と `max` が同じ場合は、`clamp()` ではなくその値を返します。
 
 出力の単位を `rem` にすると、ブラウザーの文字サイズの設定が反映されます。
 
@@ -244,7 +312,7 @@ createFluidValue(16, 32, { unit: 'px', minViewport: 400, maxViewport: 1200 });
 #### `createFluidScale`
 
 ```ts
-createFluidScale(options: FluidScaleOptions): (step: number) => string
+createFluidScale(options: CreateFluidScaleOptions): (step: number) => string
 ```
 
 `createModularScale` と `createFluidValue` を組み合わせ、幅に応じて基準値と比率が変わるスケールの関数を作ります。返す関数は段階（`step`）を受け取り、`min` のスケールの値から `max` のスケールの値まで変化する `clamp()` の文字列を返します。
@@ -257,19 +325,19 @@ const scale = createFluidScale({
 scale(0); // 'clamp(1rem, 0.896rem + 0.442vw, 1.25rem)'
 ```
 
-| オプション | 型                                      | 説明                            |
-| ---------- | --------------------------------------- | ------------------------------- |
-| `min`      | `Omit<ModularScaleOptions, 'decimals'>` | `minViewport` でのスケール      |
-| `max`      | `Omit<ModularScaleOptions, 'decimals'>` | `maxViewport` でのスケール      |
-| その他     |                                         | `createFluidValue` のオプション |
+| オプション | 型                                            | 説明                            |
+| ---------- | --------------------------------------------- | ------------------------------- |
+| `min`      | `Omit<CreateModularScaleOptions, 'decimals'>` | `minViewport` でのスケール      |
+| `max`      | `Omit<CreateModularScaleOptions, 'decimals'>` | `maxViewport` でのスケール      |
+| その他     |                                               | `createFluidValue` のオプション |
 
 #### 型
 
-| 型                    | 説明                              |
-| --------------------- | --------------------------------- |
-| `ModularScaleOptions` | `createModularScale` のオプション |
-| `FluidValueOptions`   | `createFluidValue` のオプション   |
-| `FluidScaleOptions`   | `createFluidScale` のオプション   |
+| 型                          | 説明                              |
+| --------------------------- | --------------------------------- |
+| `CreateModularScaleOptions` | `createModularScale` のオプション |
+| `CreateFluidValueOptions`   | `createFluidValue` のオプション   |
+| `CreateFluidScaleOptions`   | `createFluidScale` のオプション   |
 
 ### サイズ・レイアウト
 
@@ -311,7 +379,7 @@ calculateObjectFit(
 calculateColumnWidth(span: number, options: CalculateColumnWidthOptions): number
 ```
 
-カラムグリッドで `span` 列分の幅（間の列の間隔を含む）を返します。デザインカンプの数値の確認などに使えます。
+カラムグリッドで `span` 列分の幅（間の列の間隔を含む）を返します。`span` が 0 以下の場合は `0` を返します。デザインカンプの数値の確認などに使えます。
 
 ```ts
 calculateColumnWidth(4, { columns: 12, gutter: 24, containerWidth: 1128 }); // 360
@@ -379,6 +447,8 @@ getPaperSize('A4', { unit: 'px' }); // { width: 793.701, height: 1122.52 }
 #### `appendUnit`
 
 ```ts
+appendUnit(value: number, unit?: string): string
+appendUnit<T extends string | null | undefined>(value: T, unit?: string): T
 appendUnit(value: string | number | null | undefined, unit?: string): string | null | undefined
 ```
 
@@ -401,6 +471,8 @@ createCssVariables(tokens: DesignTokens, options?: CreateCssVariablesOptions): R
 ```
 
 デザイントークンのオブジェクトから CSS 変数のオブジェクトを作ります。階層のキーを `separator` でつないだものが変数名になります。戻り値は React の `style` にそのまま渡せるほか、文字列にして `:root { … }` の中身にも使えます。
+
+つないだ結果が同じ名前になるキー（`{ a: { b: 1 }, 'a-b': 2 }` など）は検出せず、後の値で上書きします。
 
 ```ts
 createCssVariables(
@@ -438,7 +510,7 @@ createCssVariableReference('color.primary', { fallback: '#06c' }); // 'var(--col
 #### `createMediaQuery`
 
 ```ts
-createMediaQuery<K extends string>(breakpoints: Readonly<Record<K, number>>, options?: MediaQueryOptions): MediaQuery<K>
+createMediaQuery<K extends string>(breakpoints: Readonly<Record<K, number>>, options?: CreateMediaQueryOptions): MediaQuery<K>
 ```
 
 ブレークポイントの名前と幅（px）から、`@media` / `@container` のクエリーを作る関数を返します。CSS-in-JS のキーなどに使えます。
@@ -451,18 +523,19 @@ mq.between('sm', 'lg'); // '@media (640px <= width < 1024px)'
 mq.only('md'); // '@media (768px <= width < 1024px)'
 ```
 
-| メソッド            | 説明                                                                                            |
-| ------------------- | ----------------------------------------------------------------------------------------------- |
-| `up(name)`          | `name` の幅以上                                                                                 |
-| `down(name)`        | `name` の幅未満                                                                                 |
-| `between(min, max)` | `min` の幅以上、`max` の幅未満                                                                  |
-| `only(name)`        | `name` の幅以上、次に大きいブレークポイントの幅未満。一番大きいブレークポイントでは `up` と同じ |
+| メソッド            | 説明                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| `up(name)`          | `name` の幅以上                                                                                    |
+| `down(name)`        | `name` の幅未満                                                                                    |
+| `between(min, max)` | `min` の幅以上、`max` の幅未満。`min` の幅のほうが大きい場合は入れ替え、同じ幅の場合はエラーにする |
+| `only(name)`        | `name` の幅以上、次に大きいブレークポイントの幅未満。一番大きいブレークポイントでは `up` と同じ    |
 
-| オプション | 型                       | 説明                                                                                                                                                            |
-| ---------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type?`    | `'media' \| 'container'` | 作るクエリーの種類。デフォルトは `'media'`                                                                                                                      |
-| `unit?`    | `'px' \| 'em'`           | 出力の単位。`em` は 16px を 1em として換算する。デフォルトは `'px'`                                                                                             |
-| `syntax?`  | `'range' \| 'min-max'`   | `'range'`: 範囲の構文、`'min-max'`: `min-width` / `max-width`（範囲の構文に対応していないブラウザー向け。上限は 0.02px 小さい値にする）。デフォルトは `'range'` |
+| オプション       | 型                       | 説明                                                                                                                                                                    |
+| ---------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type?`          | `'media' \| 'container'` | 作るクエリーの種類。デフォルトは `'media'`                                                                                                                              |
+| `containerName?` | `string`                 | コンテナーの名前（`container-name`）。`type` が `'container'` の場合だけ使い、`@container sidebar (…)` のように出力する。指定しない場合は一番近いコンテナーが対象になる |
+| `unit?`          | `'px' \| 'em'`           | 出力の単位。`em` は 16px を 1em として換算する。デフォルトは `'px'`                                                                                                     |
+| `syntax?`        | `'range' \| 'min-max'`   | `'range'`: 範囲の構文、`'min-max'`: `min-width` / `max-width`（範囲の構文に対応していないブラウザー向け。上限は 0.02px 小さい値にする）。デフォルトは `'range'`         |
 
 #### 型
 
@@ -471,7 +544,7 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 | `DesignTokens`                      | `createCssVariables` に渡すトークン       |
 | `CreateCssVariablesOptions`         | `createCssVariables` のオプション         |
 | `CreateCssVariableReferenceOptions` | `createCssVariableReference` のオプション |
-| `MediaQueryOptions`                 | `createMediaQuery` のオプション           |
+| `CreateMediaQueryOptions`           | `createMediaQuery` のオプション           |
 | `MediaQuery<K>`                     | `createMediaQuery` が返す関数             |
 
 ### 色
@@ -485,12 +558,12 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 #### `createColorScale`
 
 ```ts
-createColorScale(color: string, options?: ColorScaleOptions): Record<number, string>
+createColorScale<const S extends number = DefaultColorScaleStep>(color: string, options?: CreateColorScaleOptions<S>): Record<S, string>
 ```
 
 1つの色から、段階ごとの色を CSS の `color-mix()` の文字列で作ります。色の計算はブラウザーが行うため、`var(--brand)` のような CSS 変数を元の色に使えます。テーマの切り替えで元の色だけを差し替えるパレットを作れます。
 
-段階 `0` を `light`、`baseStep` を元の色、`1000` を `dark` として、その間は段階に比例した割合で色を混ぜます。
+段階 `0` を `light`、`baseStep` を元の色、`1000` を `dark` として、その間は段階に比例した割合で色を混ぜます。戻り値のキーは `steps` の型になります。
 
 ```ts
 createColorScale('var(--brand)');
@@ -503,20 +576,21 @@ createColorScale('var(--brand)');
 // }
 ```
 
-| オプション  | 型                  | 説明                                                        |
-| ----------- | ------------------- | ----------------------------------------------------------- |
-| `steps?`    | `readonly number[]` | 作る段階。デフォルトは `[50, 100, 200, …, 900, 950]`        |
-| `baseStep?` | `number`            | 元の色をそのまま使う段階。デフォルトは `500`                |
-| `space?`    | `string`            | `color-mix()` で色を混ぜる色空間。デフォルトは `'oklch'`    |
-| `light?`    | `string`            | `baseStep` より小さい段階で混ぜる色。デフォルトは `'white'` |
-| `dark?`     | `string`            | `baseStep` より大きい段階で混ぜる色。デフォルトは `'black'` |
-| `decimals?` | `number`            | 割合（%）の小数点以下の桁数。デフォルトは `3`               |
+| オプション  | 型             | 説明                                                        |
+| ----------- | -------------- | ----------------------------------------------------------- |
+| `steps?`    | `readonly S[]` | 作る段階。デフォルトは `[50, 100, 200, …, 900, 950]`        |
+| `baseStep?` | `number`       | 元の色をそのまま使う段階。デフォルトは `500`                |
+| `space?`    | `string`       | `color-mix()` で色を混ぜる色空間。デフォルトは `'oklch'`    |
+| `light?`    | `string`       | `baseStep` より小さい段階で混ぜる色。デフォルトは `'white'` |
+| `dark?`     | `string`       | `baseStep` より大きい段階で混ぜる色。デフォルトは `'black'` |
+| `decimals?` | `number`       | 割合（%）の小数点以下の桁数。デフォルトは `3`               |
 
 #### 型
 
-| 型                  | 説明                            |
-| ------------------- | ------------------------------- |
-| `ColorScaleOptions` | `createColorScale` のオプション |
+| 型                           | 説明                                                       |
+| ---------------------------- | ---------------------------------------------------------- |
+| `CreateColorScaleOptions<S>` | `createColorScale` のオプション                            |
+| `DefaultColorScaleStep`      | `createColorScale` の既定の段階（`50 \| 100 \| … \| 950`） |
 
 ### イージング
 
@@ -528,7 +602,7 @@ createColorScale('var(--brand)');
 #### `createLinearEasing`
 
 ```ts
-createLinearEasing(easing: EasingFunction, options?: LinearEasingOptions): string
+createLinearEasing(easing: EasingFunction, options?: CreateLinearEasingOptions): string
 ```
 
 JavaScript のイージング関数（d3-ease などのもの）を、CSS の `linear()` の文字列に変換します。`samples` 個の区間で計算した点のうち、前後の点を直線でつないでも誤差が `tolerance` 以下になる点を間引いて出力します。
@@ -546,32 +620,33 @@ createLinearEasing((t) => t * t, { samples: 4, tolerance: 0.1 }); // 'linear(0, 
 #### `createSpringEasing`
 
 ```ts
-createSpringEasing(options?: SpringEasingOptions): SpringEasing
+createSpringEasing(options?: CreateSpringEasingOptions): SpringEasing
 ```
 
-ばねの物理モデルから、イージング関数（`easing`）・ばねが止まるまでの時間（`duration`、ms）・CSS の `linear()` の文字列（`css`）を作ります。`duration` を `transition-duration` などに指定すると、ばねと同じ速さで動きます。
+ばねの物理モデルから、イージング関数（`easing`）・ばねが止まるまでの時間（`duration`、ms）・CSS の `linear()` の文字列（`css`）を作ります。`duration` を `transition-duration` などに指定すると、ばねと同じ速さで動きます。`maxDuration` までにばねが止まらない場合は `maxDuration` で打ち切り、最後に目標の位置へ移ります。
 
 ```ts
 const { css, duration } = createSpringEasing({ stiffness: 200, damping: 15 });
 element.style.transition = `transform ${duration}ms ${css}`;
 ```
 
-| オプション   | 型       | 説明                                                                    |
-| ------------ | -------- | ----------------------------------------------------------------------- |
-| `stiffness?` | `number` | ばねの硬さ。大きいほど速く動く。デフォルトは `100`                      |
-| `damping?`   | `number` | 減衰の強さ。小さいほど大きく揺れる。デフォルトは `10`                   |
-| `mass?`      | `number` | 質量。大きいほどゆっくり動く。デフォルトは `1`                          |
-| `velocity?`  | `number` | 初速度（全体の移動量を 1 とした、1 秒あたりの移動量）。デフォルトは `0` |
-| その他       |          | `createLinearEasing` のオプション                                       |
+| オプション     | 型       | 説明                                                                    |
+| -------------- | -------- | ----------------------------------------------------------------------- |
+| `stiffness?`   | `number` | ばねの硬さ。大きいほど速く動く。デフォルトは `100`                      |
+| `damping?`     | `number` | 減衰の強さ。小さいほど大きく揺れる。デフォルトは `10`                   |
+| `mass?`        | `number` | 質量。大きいほどゆっくり動く。デフォルトは `1`                          |
+| `velocity?`    | `number` | 初速度（全体の移動量を 1 とした、1 秒あたりの移動量）。デフォルトは `0` |
+| `maxDuration?` | `number` | 止まるまでの時間を探す上限（ms）。デフォルトは `60000`                  |
+| その他         |          | `createLinearEasing` のオプション                                       |
 
 #### 型
 
-| 型                    | 説明                                                         |
-| --------------------- | ------------------------------------------------------------ |
-| `EasingFunction`      | `(t: number) => number`                                      |
-| `LinearEasingOptions` | `createLinearEasing` のオプション                            |
-| `SpringEasingOptions` | `createSpringEasing` のオプション                            |
-| `SpringEasing`        | `createSpringEasing` の戻り値（`easing`・`duration`・`css`） |
+| 型                          | 説明                                                         |
+| --------------------------- | ------------------------------------------------------------ |
+| `EasingFunction`            | `(t: number) => number`                                      |
+| `CreateLinearEasingOptions` | `createLinearEasing` のオプション                            |
+| `CreateSpringEasingOptions` | `createSpringEasing` のオプション                            |
+| `SpringEasing`              | `createSpringEasing` の戻り値（`easing`・`duration`・`css`） |
 
 ## ライセンス
 

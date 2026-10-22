@@ -36,4 +36,13 @@ describe('appendUnit', () => {
   it('undefinedはそのまま返す', () => {
     expect(appendUnit(undefined)).toBeUndefined();
   });
+
+  it('戻り値の型は渡した値の型に合わせる', () => {
+    expectTypeOf(appendUnit(10)).toEqualTypeOf<string>();
+    expectTypeOf(appendUnit('10px')).toEqualTypeOf<'10px'>();
+    expectTypeOf(appendUnit(null)).toEqualTypeOf<null>();
+    expectTypeOf(appendUnit(10 as number | string | undefined)).toEqualTypeOf<
+      string | null | undefined
+    >();
+  });
 });

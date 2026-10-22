@@ -1,6 +1,6 @@
 import { createFluidValue } from '../createFluidValue';
 import _createModularScale from '../createModularScale/_createModularScale';
-import type { FluidScaleOptions } from './types';
+import type { CreateFluidScaleOptions } from './types';
 
 /**
  * 幅に応じて基準値と比率が変わるモジュラースケールの関数を作る
@@ -12,7 +12,7 @@ import type { FluidScaleOptions } from './types';
  * @returns
  */
 export default function createFluidScale(
-  options: FluidScaleOptions,
+  options: CreateFluidScaleOptions,
 ): (step: number) => string {
   const { min, max, ...fluidValueOptions } = options;
   const minScale = _createModularScale(min);

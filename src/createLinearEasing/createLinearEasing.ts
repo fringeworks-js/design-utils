@@ -1,5 +1,5 @@
 import round, { DEFAULT_DECIMALS } from '../_internal/round';
-import type { EasingFunction, LinearEasingOptions } from './types';
+import type { CreateLinearEasingOptions, EasingFunction } from './types';
 
 /**
  * JavaScript のイージング関数を、CSS の `linear()` の文字列に変換する
@@ -13,7 +13,7 @@ import type { EasingFunction, LinearEasingOptions } from './types';
  */
 export default function createLinearEasing(
   easing: EasingFunction,
-  options: LinearEasingOptions = {},
+  options: CreateLinearEasingOptions = {},
 ): string {
   const {
     samples = 100,
@@ -39,7 +39,9 @@ export default function createLinearEasing(
   const points = indexes.map((index, i) => {
     const value = format(values[index]!);
     // 最初と最後の点は位置を省略できる (0% と 100%)
-    if (i === 0 || i === indexes.length - 1) return `${value}`;
+    if (i === 0 || i === indexes.length - 1) {
+      return `${value}`;
+    }
     return `${value} ${format((index / samples) * 100)}%`;
   });
   return `linear(${points.join(', ')})`;

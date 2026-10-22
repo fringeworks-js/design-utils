@@ -1,6 +1,6 @@
 import round, { DEFAULT_DECIMALS } from '../_internal/round';
 import _createModularScale from './_createModularScale';
-import type { ModularScaleOptions } from './types';
+import type { CreateModularScaleOptions } from './types';
 
 /**
  * モジュラースケールの関数を作る
@@ -12,7 +12,7 @@ import type { ModularScaleOptions } from './types';
  * @returns
  */
 export default function createModularScale(
-  options: ModularScaleOptions = {},
+  options: CreateModularScaleOptions = {},
 ): (step: number) => number {
   const { decimals = DEFAULT_DECIMALS } = options;
   const scale = _createModularScale(options);

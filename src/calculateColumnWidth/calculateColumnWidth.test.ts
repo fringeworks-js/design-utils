@@ -14,4 +14,20 @@ describe('calculateColumnWidth', () => {
     expect(calculateColumnWidth(1, options)).toBe(33.333);
     expect(calculateColumnWidth(1, { ...options, decimals: 0 })).toBe(33);
   });
+
+  it('列の間隔が 0 の場合は等分する', () => {
+    const options = { columns: 4, gutter: 0, containerWidth: 960 };
+    expect(calculateColumnWidth(1, options)).toBe(240);
+    expect(calculateColumnWidth(3, options)).toBe(720);
+  });
+
+  it('列が1つの場合はグリッド全体の幅', () => {
+    const options = { columns: 1, gutter: 24, containerWidth: 960 };
+    expect(calculateColumnWidth(1, options)).toBe(960);
+  });
+
+  it('span が 0 以下の場合は 0', () => {
+    expect(calculateColumnWidth(0, grid)).toBe(0);
+    expect(calculateColumnWidth(-1, grid)).toBe(0);
+  });
 });

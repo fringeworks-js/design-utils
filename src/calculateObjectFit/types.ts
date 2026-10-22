@@ -1,10 +1,7 @@
-/**
- * 大きさ
- */
-export type Size = {
-  width: number;
-  height: number;
-};
+import type { Size } from '../_internal/types';
+
+// getPaperSize と共通で使う
+export type { Size };
 
 /**
  * 位置と大きさ

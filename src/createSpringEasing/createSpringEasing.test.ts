@@ -60,6 +60,28 @@ describe('createSpringEasing', () => {
     expect(css).toBe(createLinearEasing(easing, options));
   });
 
+  it('duration に時刻の誤差がたまらない', () => {
+    // 0.001 秒ずつ時刻を足し合わせていたときは 898 になっていた
+    const { duration } = createSpringEasing({ stiffness: 200, damping: 15 });
+    expect(duration).toBe(897);
+  });
+
+  it('maxDuration までに止まらない場合は maxDuration で打ち切る', () => {
+    expect(createSpringEasing({ damping: 0.01 }).duration).toBe(60_000);
+    expect(
+      createSpringEasing({ damping: 0.01, maxDuration: 3000 }).duration,
+    ).toBe(3000);
+    // 止まるまでの時間より長ければ影響しない
+    expect(createSpringEasing({ maxDuration: 5000 }).duration).toBe(
+      createSpringEasing().duration,
+    );
+  });
+
+  it('maxDuration が正の数でなければエラー', () => {
+    expect(() => createSpringEasing({ maxDuration: 0 })).toThrow(RangeError);
+    expect(() => createSpringEasing({ maxDuration: NaN })).toThrow(RangeError);
+  });
+
   it('stiffness / damping / mass が正の数でなければエラー', () => {
     expect(() => createSpringEasing({ stiffness: 0 })).toThrow(RangeError);
     expect(() => createSpringEasing({ damping: 0 })).toThrow(RangeError);

@@ -16,7 +16,9 @@ function evaluateLinear(css: string, t: number) {
         : Number(position.slice(0, -1)) / 100,
   }));
   const index = points.findIndex((point) => point.position >= t);
-  if (index <= 0) return points[0]!.value;
+  if (index <= 0) {
+    return points[0]!.value;
+  }
   const a = points[index - 1]!;
   const b = points[index]!;
   return (
@@ -29,9 +31,15 @@ const easeInQuad = (t: number) => t * t;
 const easeOutBounce = (t: number) => {
   const n1 = 7.5625;
   const d1 = 2.75;
-  if (t < 1 / d1) return n1 * t * t;
-  if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
-  if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+  if (t < 1 / d1) {
+    return n1 * t * t;
+  }
+  if (t < 2 / d1) {
+    return n1 * (t -= 1.5 / d1) * t + 0.75;
+  }
+  if (t < 2.5 / d1) {
+    return n1 * (t -= 2.25 / d1) * t + 0.9375;
+  }
   return n1 * (t -= 2.625 / d1) * t + 0.984375;
 };
 

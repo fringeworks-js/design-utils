@@ -2,13 +2,13 @@ import { SILVER_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleBySilverOptions } from './types';
 
 /**
- * valueに対して白銀比になる値を返す\
+ * `value` に対して白銀比になる値を返す
  *
- * 白銀比 (≈ 2.414)\
- * 日本の美意識に強く影響を与えている比率
+ * 白銀比 (1 + √2 ≈ 2.414)\
+ * 貴金属比 (x² = nx + 1 の正の解) の n = 2 の値\
+ * 日本で白銀比と呼ばれることが多い 1:√2 は `scaleByYamato` (`scaleBySqrt2`) を使う
  *
- * - 法隆寺の五重塔、金閣寺 などの寺社建築
- * - 畳の比率
+ * - 正八角形の、向かい合う辺の間の距離と辺の比
  *
  * @param value
  * @param options

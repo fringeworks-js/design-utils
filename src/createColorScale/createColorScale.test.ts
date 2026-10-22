@@ -1,4 +1,5 @@
 import createColorScale from './createColorScale';
+import type { DefaultColorScaleStep } from './types';
 
 describe('createColorScale', () => {
   it('デフォルトの段階', () => {
@@ -27,6 +28,18 @@ describe('createColorScale', () => {
       300: '#06c',
       900: 'color-mix(in srgb, #06c 14.3%, #000)',
     });
+  });
+
+  it('戻り値のキーは段階の型になる', () => {
+    expectTypeOf(createColorScale('red')).toEqualTypeOf<
+      Record<DefaultColorScaleStep, string>
+    >();
+    expectTypeOf(createColorScale('red', { space: 'srgb' })).toEqualTypeOf<
+      Record<DefaultColorScaleStep, string>
+    >();
+    expectTypeOf(createColorScale('red', { steps: [100, 300] })).toEqualTypeOf<
+      Record<100 | 300, string>
+    >();
   });
 
   it('範囲外の段階は 0% にする', () => {

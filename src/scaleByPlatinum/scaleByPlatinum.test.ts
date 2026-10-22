@@ -1,6 +1,6 @@
 import scaleByPlatinum from './scaleByPlatinum';
 
-const RATIO = 1.324717957244746;
+const RATIO = Math.sqrt(3);
 
 describe('scaleByPlatinum', () => {
   it('白金比でexpandする', () => {

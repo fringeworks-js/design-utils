@@ -1,5 +1,5 @@
 import round from '../_internal/round';
-import type { MediaQuery, MediaQueryOptions } from './types';
+import type { CreateMediaQueryOptions, MediaQuery } from './types';
 
 /**
  * `min-max` の書き方で、上限から引く幅 (px)
@@ -15,11 +15,19 @@ const MAX_WIDTH_OFFSET = 0.02;
  */
 export default function createMediaQuery<K extends string>(
   breakpoints: Readonly<Record<K, number>>,
-  options: MediaQueryOptions = {},
+  options: CreateMediaQueryOptions = {},
 ): MediaQuery<K> {
-  const { type = 'media', unit = 'px', syntax = 'range' } = options;
+  const {
+    type = 'media',
+    containerName,
+    unit = 'px',
+    syntax = 'range',
+  } = options;
 
-  const atRule = `@${type}`;
+  const atRule =
+    type === 'container' && containerName
+      ? `@container ${containerName}`
+      : `@${type}`;
   const format = (px: number) =>
     // 浮動小数点の誤差を消すために丸める
     `${round(unit === 'em' ? px / 16 : px, 5)}${unit}`;
@@ -42,8 +50,12 @@ export default function createMediaQuery<K extends string>(
   const up = (name: K) => `${atRule} ${getMinCondition(getWidth(name))}`;
   const down = (name: K) => `${atRule} ${getMaxCondition(getWidth(name))}`;
   const between = (min: K, max: K) => {
-    const minWidth = getWidth(min);
-    const maxWidth = getWidth(max);
+    // 順番が逆の場合は、幅の小さいほうを下限にする
+    const minWidth = Math.min(getWidth(min), getWidth(max));
+    const maxWidth = Math.max(getWidth(min), getWidth(max));
+    if (minWidth === maxWidth) {
+      throw new RangeError(`${min} and ${max} have the same width`);
+    }
     return syntax === 'range'
       ? `${atRule} (${format(minWidth)} <= width < ${format(maxWidth)})`
       : `${atRule} ${getMinCondition(minWidth)} and ${getMaxCondition(maxWidth)}`;

@@ -2,12 +2,13 @@ import { DOUBLE_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleByDoubleOptions } from './types';
 
 /**
- * valueに対して1:2(Double)になる値を返す\
+ * `value` に対して1:2になる値を返す
  *
  * 1:2\
- * 最も基本的で規律のある比率
+ * 半分・倍の関係になる、最も単純な比率
  *
- * - 意図的な規則性を持たせる場合
+ * - 畳の縦横比
+ * - 4・8・16・32 と倍々に増やす余白のスケール (8pt グリッドなど)
  *
  * @param value
  * @param options

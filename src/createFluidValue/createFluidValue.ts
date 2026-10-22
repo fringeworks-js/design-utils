@@ -1,5 +1,5 @@
 import round, { DEFAULT_DECIMALS } from '../_internal/round';
-import type { FluidValueOptions } from './types';
+import type { CreateFluidValueOptions } from './types';
 
 /**
  * 幅に応じて `min` から `max` まで変化する値を、CSS の `clamp()` の文字列で返す
@@ -15,7 +15,7 @@ import type { FluidValueOptions } from './types';
 export default function createFluidValue(
   min: number,
   max: number,
-  options: FluidValueOptions = {},
+  options: CreateFluidValueOptions = {},
 ): string {
   const {
     minViewport = 375,
@@ -33,7 +33,9 @@ export default function createFluidValue(
   const scale = unit === 'rem' ? 1 / rootFontSize : 1;
   const format = (px: number) => `${round(px * scale, decimals)}${unit}`;
 
-  if (min === max) return format(min);
+  if (min === max) {
+    return format(min);
+  }
 
   const slope = (max - min) / (maxViewport - minViewport);
   const intercept = min - slope * minViewport;

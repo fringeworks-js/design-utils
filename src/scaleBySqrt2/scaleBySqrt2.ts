@@ -2,12 +2,13 @@ import { SQRT2_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleBySqrt2Options } from './types';
 
 /**
- * valueに対して√2比になる値を返す\
+ * `value` に対して√2比になる値を返す
  *
- * √2比 (≈ 1.414)\
- * 建築・デザインの基礎となる幾何学的な比率
+ * √2比 (≈ 1.414)
  *
- * - A4サイズの用紙比率
+ * - A 判・B 判の用紙の縦横比 (半分に切っても同じ比になる)
+ * - 印刷用のレイアウト (`@page`) や PDF のサムネイルの縦横比
+ * - 文字サイズのスケール (音楽の増4度)。1.333 と 1.5 の中間の段差
  *
  * @param value
  * @param options

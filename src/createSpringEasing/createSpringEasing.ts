@@ -1,5 +1,5 @@
 import { createLinearEasing } from '../createLinearEasing';
-import type { SpringEasing, SpringEasingOptions } from './types';
+import type { CreateSpringEasingOptions, SpringEasing } from './types';
 
 /**
  * 止まったとみなす、目標の位置からの距離 (全体の移動量を 1 とする)
@@ -7,37 +7,37 @@ import type { SpringEasing, SpringEasingOptions } from './types';
 const REST_DISTANCE = 0.001;
 
 /**
- * 止まるまでの時間を探す上限 (秒)
+ * maxDuration の既定値 (ms)
  */
-const MAX_DURATION = 60;
-
-/**
- * 止まるまでの時間を探す間隔 (秒)
- */
-const TIME_STEP = 0.001;
+const DEFAULT_MAX_DURATION = 60_000;
 
 /**
  * ばねの物理モデルから、イージング関数・止まるまでの時間・CSS の `linear()` の文字列を作る
  *
  * `duration` を CSS の `transition-duration` や `animation-duration` に指定すると、
- * ばねと同じ速さで動く
+ * ばねと同じ速さで動く\
+ * `maxDuration` までに止まらない場合は、`maxDuration` で打ち切る (最後に目標の位置へ移る)
  *
  * @param options
  * @returns
  */
 export default function createSpringEasing(
-  options: SpringEasingOptions = {},
+  options: CreateSpringEasingOptions = {},
 ): SpringEasing {
   const {
     stiffness = 100,
     damping = 10,
     mass = 1,
     velocity = 0,
+    maxDuration = DEFAULT_MAX_DURATION,
     ...linearEasingOptions
   } = options;
 
   if (!(stiffness > 0) || !(damping > 0) || !(mass > 0)) {
     throw new RangeError('stiffness, damping and mass must be positive');
+  }
+  if (!(maxDuration > 0)) {
+    throw new RangeError('maxDuration must be positive');
   }
 
   const getDisplacement = createDisplacement(
@@ -47,17 +47,23 @@ export default function createSpringEasing(
     velocity,
   );
 
-  // 目標の位置からの距離が REST_DISTANCE を超える最後の時刻を探す
-  let restTime = 0;
-  for (let time = TIME_STEP; time <= MAX_DURATION; time += TIME_STEP) {
-    if (Math.abs(getDisplacement(time)) > REST_DISTANCE) restTime = time;
+  // 目標の位置からの距離が REST_DISTANCE を超える最後の時刻 (ms) を探す
+  // 時刻を足し合わせると誤差がたまるため、整数の ms から秒を求める
+  let duration = 1;
+  for (let ms = 1; ms <= maxDuration; ms++) {
+    if (Math.abs(getDisplacement(ms / 1000)) > REST_DISTANCE) {
+      duration = ms;
+    }
   }
-  const duration = Math.ceil(restTime * 1000);
   const seconds = duration / 1000;
 
   const easing = (t: number) => {
-    if (t <= 0) return 0;
-    if (t >= 1) return 1;
+    if (t <= 0) {
+      return 0;
+    }
+    if (t >= 1) {
+      return 1;
+    }
     return 1 - getDisplacement(t * seconds);
   };
 

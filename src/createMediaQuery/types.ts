@@ -1,4 +1,4 @@
-export type MediaQueryOptions = {
+export type CreateMediaQueryOptions = {
   /**
    * 作るクエリーの種類
    * - `media`: `@media`
@@ -7,6 +7,13 @@ export type MediaQueryOptions = {
    * @default 'media'
    */
   type?: 'media' | 'container';
+
+  /**
+   * コンテナーの名前 (`container-name`)\
+   * `type` が `container` の場合だけ使い、`@container sidebar (…)` のように出力する。
+   * 指定しない場合は、一番近いコンテナーが対象になる
+   */
+  containerName?: string;
 
   /**
    * 出力の単位\
@@ -41,7 +48,8 @@ export type MediaQuery<K extends string = string> = {
   down(name: K): string;
 
   /**
-   * `min` の幅以上、`max` の幅未満
+   * `min` の幅以上、`max` の幅未満\
+   * `min` の幅のほうが大きい場合は入れ替える。同じ幅の場合はエラー
    */
   between(min: K, max: K): string;
 

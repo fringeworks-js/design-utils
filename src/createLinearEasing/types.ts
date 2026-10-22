@@ -4,7 +4,7 @@
  */
 export type EasingFunction = (t: number) => number;
 
-export type LinearEasingOptions = {
+export type CreateLinearEasingOptions = {
   /**
    * イージング関数を計算する区間の数
    * @default 100

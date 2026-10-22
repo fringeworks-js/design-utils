@@ -2,12 +2,13 @@ import { SQRT3_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleBySqrt3Options } from './types';
 
 /**
- * valueに対して√3比になる値を返す\
+ * `value` に対して√3比になる値を返す
  *
- * √3比 (≈ 1.732)\
- * 建築・デザインの基礎となる幾何学的な比率
+ * √3比 (≈ 1.732)
  *
- * - 正三角形の高さ比率（モジュール建築に活用）
+ * - 正六角形の、向かい合う辺の間の距離と辺の比
+ * - 六角形のグリッドの計算 (正六角形の幅と高さの比は 2:√3)
+ * - アイソメトリックのイラストやグリッドの計算
  *
  * @param value
  * @param options

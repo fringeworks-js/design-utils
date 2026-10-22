@@ -50,10 +50,27 @@ describe('createModularScale', () => {
         RangeError,
       );
     });
+
+    it('段階が整数でなければエラー', () => {
+      const scale = createModularScale({ base: [16, 24], ratio: 2 });
+      expect(() => scale(0.5)).toThrow(RangeError);
+      expect(() => scale(NaN)).toThrow(RangeError);
+    });
+  });
+
+  it('基準値が1つなら段階は整数でなくてもよい', () => {
+    const scale = createModularScale({ ratio: 4 });
+    expect(scale(0.5)).toBe(32);
   });
 
   it('基準値が正の数でなければエラー', () => {
     expect(() => createModularScale({ base: 0 })).toThrow(RangeError);
     expect(() => createModularScale({ base: [] })).toThrow(RangeError);
+  });
+
+  it('比率が正の数でなければエラー', () => {
+    expect(() => createModularScale({ ratio: 0 })).toThrow(RangeError);
+    expect(() => createModularScale({ ratio: -2 })).toThrow(RangeError);
+    expect(() => createModularScale({ ratio: NaN })).toThrow(RangeError);
   });
 });

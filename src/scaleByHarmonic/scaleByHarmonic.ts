@@ -2,13 +2,14 @@ import { HARMONIC_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleByHarmonicOptions } from './types';
 
 /**
- * valueに対して調和比になる値を返す\
+ * `value` に対して調和比になる値を返す
  *
- * 調和比 (≈ 1.333)\
- * 音楽や画面比率などでよく見られる比率
+ * 調和比 (4:3 ≈ 1.333)
  *
- * - 昔のテレビ
- * - 音楽のコード進行
+ * - 4:3 の画面 (アナログ放送のテレビ、iPad など)
+ * - スマートフォンのカメラの標準の縦横比。ユーザーが投稿した写真の表示枠
+ * - 音楽の完全4度の振動数の比 (`scaleByPerfectFourth` と同じ)
+ * - メリハリのある文字サイズのスケール。コーポレートサイトやデスクトップ向けの記事
  *
  * @param value
  * @param options

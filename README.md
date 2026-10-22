@@ -25,7 +25,7 @@ Nothing depends on the DOM, so you can also use it to generate design tokens at 
 
 ### Decimal places
 
-Functions that return numbers, or strings that contain numbers, round their results with the `decimals` option. Every function defaults to 3 decimal places.
+Functions that return numbers, or strings that contain numbers, round their results with the `decimals` option. Every function defaults to 3 decimal places. `decimals` is truncated to an integer and limited to the range 0–100.
 
 ### Browser support of the generated CSS
 
@@ -37,19 +37,28 @@ Some generated values only work in relatively recent browsers, such as `cqi` fro
 
 ### Ratios
 
-| Function                               | Description                                            |
-| -------------------------------------- | ------------------------------------------------------ |
-| `scaleByRatio(value, ratio, options?)` | Returns a value multiplied (or divided) by a ratio     |
-| `scaleByBronze(value, options?)`       | Returns the value at the bronze ratio (≈ 3.303)        |
-| `scaleByDouble(value, options?)`       | Returns the value at 1:2                               |
-| `scaleByGolden(value, options?)`       | Returns the value at the golden ratio (≈ 1.618)        |
-| `scaleByHarmonic(value, options?)`     | Returns the value at the harmonic ratio (4:3 ≈ 1.333)  |
-| `scaleByPlatinum(value, options?)`     | Returns the value at the platinum ratio (≈ 1.325)      |
-| `scaleBySilver(value, options?)`       | Returns the value at the silver ratio (1 + √2 ≈ 2.414) |
-| `scaleBySqrt2(value, options?)`        | Returns the value at the √2 ratio (≈ 1.414)            |
-| `scaleBySqrt3(value, options?)`        | Returns the value at the √3 ratio (≈ 1.732)            |
-| `scaleBySqrt5(value, options?)`        | Returns the value at the √5 ratio (≈ 2.236)            |
-| `scaleByYamato(value, options?)`       | Returns the value at the Yamato ratio (same as √2)     |
+| Function                                | Description                                                      |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `scaleByRatio(value, ratio, options?)`  | Returns a value multiplied (or divided) by a ratio               |
+| `scaleByBronze(value, options?)`        | Returns the value at the bronze ratio (≈ 3.303)                  |
+| `scaleByDouble(value, options?)`        | Returns the value at 1:2                                         |
+| `scaleByGolden(value, options?)`        | Returns the value at the golden ratio (≈ 1.618)                  |
+| `scaleByHarmonic(value, options?)`      | Returns the value at the harmonic ratio (4:3 ≈ 1.333)            |
+| `scaleByMajorSecond(value, options?)`   | Returns the value at the major second ratio (9:8 = 1.125)        |
+| `scaleByMajorThird(value, options?)`    | Returns the value at the major third ratio (5:4 = 1.25)          |
+| `scaleByMinorThird(value, options?)`    | Returns the value at the minor third ratio (6:5 = 1.2)           |
+| `scaleByPerfectFifth(value, options?)`  | Returns the value at the perfect fifth ratio (3:2 = 1.5)         |
+| `scaleByPerfectFourth(value, options?)` | Returns the value at the perfect fourth ratio (same as harmonic) |
+| `scaleByPhoto(value, options?)`         | Returns the value at the photo ratio (3:2 = 1.5)                 |
+| `scaleByPlastic(value, options?)`       | Returns the value at the plastic ratio (≈ 1.325)                 |
+| `scaleByPlatinum(value, options?)`      | Returns the value at the platinum ratio (same as √3)             |
+| `scaleBySilver(value, options?)`        | Returns the value at the silver ratio (1 + √2 ≈ 2.414)           |
+| `scaleBySqrt2(value, options?)`         | Returns the value at the √2 ratio (≈ 1.414)                      |
+| `scaleBySqrt3(value, options?)`         | Returns the value at the √3 ratio (≈ 1.732)                      |
+| `scaleBySqrt5(value, options?)`         | Returns the value at the √5 ratio (≈ 2.236)                      |
+| `scaleByUltrawide(value, options?)`     | Returns the value at the ultrawide ratio (21:9 ≈ 2.333)          |
+| `scaleByWidescreen(value, options?)`    | Returns the value at the widescreen ratio (16:9 ≈ 1.778)         |
+| `scaleByYamato(value, options?)`        | Returns the value at the Yamato ratio (same as √2)               |
 
 #### `scaleByRatio`
 
@@ -76,11 +85,20 @@ scaleByBronze(value: number, options?: ScaleByRatioOptions): number
 scaleByDouble(value: number, options?: ScaleByRatioOptions): number
 scaleByGolden(value: number, options?: ScaleByRatioOptions): number
 scaleByHarmonic(value: number, options?: ScaleByRatioOptions): number
+scaleByMajorSecond(value: number, options?: ScaleByRatioOptions): number
+scaleByMajorThird(value: number, options?: ScaleByRatioOptions): number
+scaleByMinorThird(value: number, options?: ScaleByRatioOptions): number
+scaleByPerfectFifth(value: number, options?: ScaleByRatioOptions): number
+scaleByPerfectFourth(value: number, options?: ScaleByRatioOptions): number
+scaleByPhoto(value: number, options?: ScaleByRatioOptions): number
+scaleByPlastic(value: number, options?: ScaleByRatioOptions): number
 scaleByPlatinum(value: number, options?: ScaleByRatioOptions): number
 scaleBySilver(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt2(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt3(value: number, options?: ScaleByRatioOptions): number
 scaleBySqrt5(value: number, options?: ScaleByRatioOptions): number
+scaleByUltrawide(value: number, options?: ScaleByRatioOptions): number
+scaleByWidescreen(value: number, options?: ScaleByRatioOptions): number
 scaleByYamato(value: number, options?: ScaleByRatioOptions): number
 ```
 
@@ -91,27 +109,77 @@ scaleByGolden(100); // 161.803
 scaleByGolden(100, { mode: 'shrink' }); // 61.803
 ```
 
+#### Choosing by use
+
+Ratios with an established use on the web, grouped by use. Items marked "said to" are commonly claimed, but rest on convention or impression rather than evidence.
+
+**Type scales** (pass the constant as `ratio` to `createModularScale` or `createFluidScale`)
+
+| Function                                  | Ratio   | Typical use                                                    | Impression                    |
+| ----------------------------------------- | ------- | -------------------------------------------------------------- | ----------------------------- |
+| `scaleByMajorSecond`                      | 1.125   | Documentation, admin screens and other dense UIs, mobile       | Subtle, calm                  |
+| `scaleByMinorThird`                       | 1.2     | App UIs, dashboards, mobile                                    | Subtle, practical             |
+| `scaleByMajorThird`                       | 1.25    | Blogs and general sites; often the default in type scale tools | Standard                      |
+| `scaleByPerfectFourth`, `scaleByHarmonic` | ≈ 1.333 | Corporate sites, articles for desktop                          | Clear contrast                |
+| `scaleBySqrt2`                            | ≈ 1.414 | When you want a step between 1.333 and 1.5                     |                               |
+| `scaleByPerfectFifth`                     | 1.5     | Landing pages, marketing pages, portfolios                     | Strong                        |
+| `scaleByGolden`                           | ≈ 1.618 | Visual-first pages with bold headings                          | Bold; said to feel harmonious |
+
+Smaller screens often use a smaller ratio and larger screens a larger one. `createFluidScale` switches between them by width (e.g. `MINOR_THIRD_RATIO` on mobile and `PERFECT_FOURTH_RATIO` on desktop).
+
+**Aspect ratios**
+
+| Function                        | Ratio | Typical use                                                                     |
+| ------------------------------- | ----- | ------------------------------------------------------------------------------- |
+| `scaleByWidescreen`             | 16:9  | Video embeds (YouTube etc.), hero images, slides                                |
+| `scaleByHarmonic`               | 4:3   | The default aspect ratio of smartphone cameras; frames for user-uploaded photos |
+| `scaleByPhoto`                  | 3:2   | Photos from DSLR and mirrorless cameras, product photos, galleries              |
+| `scaleByUltrawide`              | 21:9  | Cinematic wide banners and visuals                                              |
+| `scaleBySqrt2`, `scaleByYamato` | 1:√2  | Print layouts (`@page`), PDF thumbnails                                         |
+
+**Spacing and layout**
+
+| Function                          | Typical use                                                                                                 |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `scaleByDouble`                   | Spacing scales that double at each step, such as 4, 8, 16, 32 (8pt grids etc.)                              |
+| `scaleByPerfectFifth`             | Line height of body text (WCAG 1.4.12 requires content to survive a line height of 1.5 times the font size) |
+| `scaleByGolden`                   | Two-column splits (e.g. 61.8 : 38.2 for main content and sidebar)                                           |
+| `scaleBySqrt3`, `scaleByPlatinum` | Hexagonal grids and isometric illustrations                                                                 |
+
+**Choosing by origin**
+
+`scaleByYamato` is used in Japanese architecture and character design, and is said to feel familiar and stable to Japanese audiences. `scaleBySilver`, `scaleByBronze`, `scaleBySqrt5` and `scaleByPlastic` have no established use on the web; they come from mathematical properties or architecture (the plastic number comes from the proportional system of the architect Dom Hans van der Laan).
+
 #### Constants
 
-| Constant         | Description                              |
-| ---------------- | ---------------------------------------- |
-| `GOLDEN_RATIO`   | The golden ratio (≈ 1.618)               |
-| `SILVER_RATIO`   | The silver ratio (1 + √2 ≈ 2.414)        |
-| `BRONZE_RATIO`   | The bronze ratio (≈ 3.303)               |
-| `PLATINUM_RATIO` | The platinum ratio (≈ 1.325)             |
-| `SQRT2_RATIO`    | The √2 ratio (≈ 1.414)                   |
-| `SQRT3_RATIO`    | The √3 ratio (≈ 1.732)                   |
-| `SQRT5_RATIO`    | The √5 ratio (≈ 2.236)                   |
-| `YAMATO_RATIO`   | The Yamato ratio (same as `SQRT2_RATIO`) |
-| `HARMONIC_RATIO` | The harmonic ratio (4:3 ≈ 1.333)         |
-| `DOUBLE_RATIO`   | 1:2                                      |
+| Constant               | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `GOLDEN_RATIO`         | The golden ratio (≈ 1.618)                          |
+| `SILVER_RATIO`         | The silver ratio (1 + √2 ≈ 2.414)                   |
+| `BRONZE_RATIO`         | The bronze ratio (≈ 3.303)                          |
+| `PLATINUM_RATIO`       | The platinum ratio (same as `SQRT3_RATIO`)          |
+| `PLASTIC_RATIO`        | The plastic ratio (the plastic number ≈ 1.325)      |
+| `SQRT2_RATIO`          | The √2 ratio (≈ 1.414)                              |
+| `SQRT3_RATIO`          | The √3 ratio (≈ 1.732)                              |
+| `SQRT5_RATIO`          | The √5 ratio (≈ 2.236)                              |
+| `YAMATO_RATIO`         | The Yamato ratio (same as `SQRT2_RATIO`)            |
+| `HARMONIC_RATIO`       | The harmonic ratio (4:3 ≈ 1.333)                    |
+| `DOUBLE_RATIO`         | 1:2                                                 |
+| `MAJOR_SECOND_RATIO`   | The major second ratio (9:8 = 1.125)                |
+| `MINOR_THIRD_RATIO`    | The minor third ratio (6:5 = 1.2)                   |
+| `MAJOR_THIRD_RATIO`    | The major third ratio (5:4 = 1.25)                  |
+| `PERFECT_FOURTH_RATIO` | The perfect fourth ratio (same as `HARMONIC_RATIO`) |
+| `PERFECT_FIFTH_RATIO`  | The perfect fifth ratio (3:2 = 1.5)                 |
+| `WIDESCREEN_RATIO`     | The widescreen ratio (16:9 ≈ 1.778)                 |
+| `PHOTO_RATIO`          | The photo ratio (3:2 = 1.5)                         |
+| `ULTRAWIDE_RATIO`      | The ultrawide ratio (21:9 ≈ 2.333)                  |
 
 #### Types
 
-| Type                                                                                                                                                                                                                                            | Description                   |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `ScaleByRatioOptions`                                                                                                                                                                                                                           | Options for `scaleByRatio`    |
-| `ScaleByBronzeOptions`, `ScaleByDoubleOptions`, `ScaleByGoldenOptions`, `ScaleByHarmonicOptions`, `ScaleByPlatinumOptions`, `ScaleBySilverOptions`, `ScaleBySqrt2Options`, `ScaleBySqrt3Options`, `ScaleBySqrt5Options`, `ScaleByYamatoOptions` | Same as `ScaleByRatioOptions` |
+| Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Description                   |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `ScaleByRatioOptions`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Options for `scaleByRatio`    |
+| `ScaleByBronzeOptions`, `ScaleByDoubleOptions`, `ScaleByGoldenOptions`, `ScaleByHarmonicOptions`, `ScaleByMajorSecondOptions`, `ScaleByMajorThirdOptions`, `ScaleByMinorThirdOptions`, `ScaleByPerfectFifthOptions`, `ScaleByPerfectFourthOptions`, `ScaleByPhotoOptions`, `ScaleByPlasticOptions`, `ScaleByPlatinumOptions`, `ScaleBySilverOptions`, `ScaleBySqrt2Options`, `ScaleBySqrt3Options`, `ScaleBySqrt5Options`, `ScaleByUltrawideOptions`, `ScaleByWidescreenOptions`, `ScaleByYamatoOptions` | Same as `ScaleByRatioOptions` |
 
 ### Units
 
@@ -193,12 +261,12 @@ convertLeadingToLineHeight(24, 16); // 1.5
 #### `createModularScale`
 
 ```ts
-createModularScale(options?: ModularScaleOptions): (step: number) => number
+createModularScale(options?: CreateModularScaleOptions): (step: number) => number
 ```
 
 Creates a modular scale function. The returned function takes a step and returns `base × ratio ^ step`.
 
-If `base` is an array, the scale combines multiple bases (double stranded). The scales from each base are merged into one, and steps are assigned in ascending order, with the first value of `base` as step `0`.
+If `base` is an array, the scale combines multiple bases (double stranded). The scales from each base are merged into one, and steps are assigned in ascending order, with the first value of `base` as step `0`. In this case, the returned function only accepts integer steps.
 
 ```ts
 const scale = createModularScale({ ratio: HARMONIC_RATIO });
@@ -210,19 +278,19 @@ const double = createModularScale({ base: [16, 24], ratio: 2 });
 [0, 1, 2, 3].map(double); // [16, 24, 32, 48]
 ```
 
-| Option      | Type                          | Description                                                                       |
-| ----------- | ----------------------------- | --------------------------------------------------------------------------------- |
-| `base?`     | `number \| readonly number[]` | Base value. An array combines multiple bases. Defaults to `16`                    |
-| `ratio?`    | `number`                      | Ratio. Must be greater than 1 when `base` is an array. Defaults to `GOLDEN_RATIO` |
-| `decimals?` | `number`                      | Number of decimal places. Defaults to `3`                                         |
+| Option      | Type                          | Description                                                                                     |
+| ----------- | ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `base?`     | `number \| readonly number[]` | Base value. An array combines multiple bases. Defaults to `16`                                  |
+| `ratio?`    | `number`                      | Ratio. Must be positive, and greater than 1 when `base` is an array. Defaults to `GOLDEN_RATIO` |
+| `decimals?` | `number`                      | Number of decimal places. Defaults to `3`                                                       |
 
 #### `createFluidValue`
 
 ```ts
-createFluidValue(min: number, max: number, options?: FluidValueOptions): string
+createFluidValue(min: number, max: number, options?: CreateFluidValueOptions): string
 ```
 
-Returns a CSS `clamp()` string for a value that changes from `min` to `max` with the width of the viewport (or container). `min` and `max` are in px, so you can use the values from a design comp as they are. If `min` is greater than `max`, the value gets smaller as the width grows.
+Returns a CSS `clamp()` string for a value that changes from `min` to `max` with the width of the viewport (or container). `min` and `max` are in px, so you can use the values from a design comp as they are. If `min` is greater than `max`, the value gets smaller as the width grows. If `min` and `max` are equal, returns the value itself instead of `clamp()`.
 
 When the output unit is `rem`, the browser's font size setting is respected.
 
@@ -244,7 +312,7 @@ createFluidValue(16, 32, { unit: 'px', minViewport: 400, maxViewport: 1200 });
 #### `createFluidScale`
 
 ```ts
-createFluidScale(options: FluidScaleOptions): (step: number) => string
+createFluidScale(options: CreateFluidScaleOptions): (step: number) => string
 ```
 
 Combines `createModularScale` and `createFluidValue` to create a scale function whose base and ratio change with the width. The returned function takes a step and returns a `clamp()` string that changes from the value of the `min` scale to the value of the `max` scale.
@@ -257,19 +325,19 @@ const scale = createFluidScale({
 scale(0); // 'clamp(1rem, 0.896rem + 0.442vw, 1.25rem)'
 ```
 
-| Option | Type                                    | Description                    |
-| ------ | --------------------------------------- | ------------------------------ |
-| `min`  | `Omit<ModularScaleOptions, 'decimals'>` | The scale at `minViewport`     |
-| `max`  | `Omit<ModularScaleOptions, 'decimals'>` | The scale at `maxViewport`     |
-| Others |                                         | Options for `createFluidValue` |
+| Option | Type                                          | Description                    |
+| ------ | --------------------------------------------- | ------------------------------ |
+| `min`  | `Omit<CreateModularScaleOptions, 'decimals'>` | The scale at `minViewport`     |
+| `max`  | `Omit<CreateModularScaleOptions, 'decimals'>` | The scale at `maxViewport`     |
+| Others |                                               | Options for `createFluidValue` |
 
 #### Types
 
-| Type                  | Description                      |
-| --------------------- | -------------------------------- |
-| `ModularScaleOptions` | Options for `createModularScale` |
-| `FluidValueOptions`   | Options for `createFluidValue`   |
-| `FluidScaleOptions`   | Options for `createFluidScale`   |
+| Type                        | Description                      |
+| --------------------------- | -------------------------------- |
+| `CreateModularScaleOptions` | Options for `createModularScale` |
+| `CreateFluidValueOptions`   | Options for `createFluidValue`   |
+| `CreateFluidScaleOptions`   | Options for `createFluidScale`   |
 
 ### Sizes and layout
 
@@ -311,7 +379,7 @@ calculateObjectFit(
 calculateColumnWidth(span: number, options: CalculateColumnWidthOptions): number
 ```
 
-Returns the width of `span` columns in a column grid, including the gutters between them. Useful for checking the numbers in a design comp.
+Returns the width of `span` columns in a column grid, including the gutters between them. Returns `0` if `span` is 0 or less. Useful for checking the numbers in a design comp.
 
 ```ts
 calculateColumnWidth(4, { columns: 12, gutter: 24, containerWidth: 1128 }); // 360
@@ -379,6 +447,8 @@ getPaperSize('A4', { unit: 'px' }); // { width: 793.701, height: 1122.52 }
 #### `appendUnit`
 
 ```ts
+appendUnit(value: number, unit?: string): string
+appendUnit<T extends string | null | undefined>(value: T, unit?: string): T
 appendUnit(value: string | number | null | undefined, unit?: string): string | null | undefined
 ```
 
@@ -401,6 +471,8 @@ createCssVariables(tokens: DesignTokens, options?: CreateCssVariablesOptions): R
 ```
 
 Creates an object of CSS variables from an object of design tokens. Each variable name is the keys of its path joined with `separator`. You can pass the result directly to a React `style`, or turn it into a string for the body of `:root { … }`.
+
+Keys that produce the same name after joining (such as `{ a: { b: 1 }, 'a-b': 2 }`) are not detected, and the later value overwrites the earlier one.
 
 ```ts
 createCssVariables(
@@ -438,7 +510,7 @@ createCssVariableReference('color.primary', { fallback: '#06c' }); // 'var(--col
 #### `createMediaQuery`
 
 ```ts
-createMediaQuery<K extends string>(breakpoints: Readonly<Record<K, number>>, options?: MediaQueryOptions): MediaQuery<K>
+createMediaQuery<K extends string>(breakpoints: Readonly<Record<K, number>>, options?: CreateMediaQueryOptions): MediaQuery<K>
 ```
 
 Returns functions that create `@media` / `@container` queries from breakpoint names and widths (px). Useful as keys in CSS-in-JS.
@@ -451,18 +523,19 @@ mq.between('sm', 'lg'); // '@media (640px <= width < 1024px)'
 mq.only('md'); // '@media (768px <= width < 1024px)'
 ```
 
-| Method              | Description                                                                                                    |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `up(name)`          | At least the width of `name`                                                                                   |
-| `down(name)`        | Less than the width of `name`                                                                                  |
-| `between(min, max)` | At least the width of `min` and less than the width of `max`                                                   |
-| `only(name)`        | At least the width of `name` and less than the next larger breakpoint. Same as `up` for the largest breakpoint |
+| Method              | Description                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `up(name)`          | At least the width of `name`                                                                                                       |
+| `down(name)`        | Less than the width of `name`                                                                                                      |
+| `between(min, max)` | At least the width of `min` and less than the width of `max`. Swaps them if `min` is wider, and throws if both have the same width |
+| `only(name)`        | At least the width of `name` and less than the next larger breakpoint. Same as `up` for the largest breakpoint                     |
 
-| Option    | Type                     | Description                                                                                                                                                   |
-| --------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type?`   | `'media' \| 'container'` | Kind of query. Defaults to `'media'`                                                                                                                          |
-| `unit?`   | `'px' \| 'em'`           | Output unit. `em` is converted with 16px as 1em. Defaults to `'px'`                                                                                           |
-| `syntax?` | `'range' \| 'min-max'`   | `'range'`: range syntax, `'min-max'`: `min-width` / `max-width` (for browsers without range syntax; the upper bound is 0.02px smaller). Defaults to `'range'` |
+| Option           | Type                     | Description                                                                                                                                                   |
+| ---------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type?`          | `'media' \| 'container'` | Kind of query. Defaults to `'media'`                                                                                                                          |
+| `containerName?` | `string`                 | Container name (`container-name`). Used only when `type` is `'container'`, as in `@container sidebar (…)`. If omitted, the nearest container is queried       |
+| `unit?`          | `'px' \| 'em'`           | Output unit. `em` is converted with 16px as 1em. Defaults to `'px'`                                                                                           |
+| `syntax?`        | `'range' \| 'min-max'`   | `'range'`: range syntax, `'min-max'`: `min-width` / `max-width` (for browsers without range syntax; the upper bound is 0.02px smaller). Defaults to `'range'` |
 
 #### Types
 
@@ -471,7 +544,7 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 | `DesignTokens`                      | Tokens passed to `createCssVariables`    |
 | `CreateCssVariablesOptions`         | Options for `createCssVariables`         |
 | `CreateCssVariableReferenceOptions` | Options for `createCssVariableReference` |
-| `MediaQueryOptions`                 | Options for `createMediaQuery`           |
+| `CreateMediaQueryOptions`           | Options for `createMediaQuery`           |
 | `MediaQuery<K>`                     | Functions returned by `createMediaQuery` |
 
 ### Colors
@@ -485,12 +558,12 @@ For color space conversion, contrast ratios, and similar calculations, use a lib
 #### `createColorScale`
 
 ```ts
-createColorScale(color: string, options?: ColorScaleOptions): Record<number, string>
+createColorScale<const S extends number = DefaultColorScaleStep>(color: string, options?: CreateColorScaleOptions<S>): Record<S, string>
 ```
 
 Creates color steps from one color as CSS `color-mix()` strings. Since the browser calculates the colors, you can use a CSS variable such as `var(--brand)` as the source color. This lets you build a palette in which a theme switch replaces only the source color.
 
-Step `0` is `light`, `baseStep` is the source color, and `1000` is `dark`. Steps in between mix the colors in proportion to the step.
+Step `0` is `light`, `baseStep` is the source color, and `1000` is `dark`. Steps in between mix the colors in proportion to the step. The keys of the result have the type of `steps`.
 
 ```ts
 createColorScale('var(--brand)');
@@ -503,20 +576,21 @@ createColorScale('var(--brand)');
 // }
 ```
 
-| Option      | Type                | Description                                                    |
-| ----------- | ------------------- | -------------------------------------------------------------- |
-| `steps?`    | `readonly number[]` | Steps to create. Defaults to `[50, 100, 200, …, 900, 950]`     |
-| `baseStep?` | `number`            | Step that uses the source color as is. Defaults to `500`       |
-| `space?`    | `string`            | Color space for mixing in `color-mix()`. Defaults to `'oklch'` |
-| `light?`    | `string`            | Color mixed into steps below `baseStep`. Defaults to `'white'` |
-| `dark?`     | `string`            | Color mixed into steps above `baseStep`. Defaults to `'black'` |
-| `decimals?` | `number`            | Number of decimal places of the percentages. Defaults to `3`   |
+| Option      | Type           | Description                                                    |
+| ----------- | -------------- | -------------------------------------------------------------- |
+| `steps?`    | `readonly S[]` | Steps to create. Defaults to `[50, 100, 200, …, 900, 950]`     |
+| `baseStep?` | `number`       | Step that uses the source color as is. Defaults to `500`       |
+| `space?`    | `string`       | Color space for mixing in `color-mix()`. Defaults to `'oklch'` |
+| `light?`    | `string`       | Color mixed into steps below `baseStep`. Defaults to `'white'` |
+| `dark?`     | `string`       | Color mixed into steps above `baseStep`. Defaults to `'black'` |
+| `decimals?` | `number`       | Number of decimal places of the percentages. Defaults to `3`   |
 
 #### Types
 
-| Type                | Description                    |
-| ------------------- | ------------------------------ |
-| `ColorScaleOptions` | Options for `createColorScale` |
+| Type                         | Description                                                   |
+| ---------------------------- | ------------------------------------------------------------- |
+| `CreateColorScaleOptions<S>` | Options for `createColorScale`                                |
+| `DefaultColorScaleStep`      | Default steps of `createColorScale` (`50 \| 100 \| … \| 950`) |
 
 ### Easing
 
@@ -528,7 +602,7 @@ createColorScale('var(--brand)');
 #### `createLinearEasing`
 
 ```ts
-createLinearEasing(easing: EasingFunction, options?: LinearEasingOptions): string
+createLinearEasing(easing: EasingFunction, options?: CreateLinearEasingOptions): string
 ```
 
 Converts a JavaScript easing function (such as those from d3-ease) to a CSS `linear()` string. The function is evaluated over `samples` intervals, and points are dropped where connecting their neighbors with a straight line stays within `tolerance`.
@@ -546,32 +620,33 @@ createLinearEasing((t) => t * t, { samples: 4, tolerance: 0.1 }); // 'linear(0, 
 #### `createSpringEasing`
 
 ```ts
-createSpringEasing(options?: SpringEasingOptions): SpringEasing
+createSpringEasing(options?: CreateSpringEasingOptions): SpringEasing
 ```
 
-Creates an easing function (`easing`), the time until the spring comes to rest (`duration`, in ms), and a CSS `linear()` string (`css`) from a physical spring model. Setting `duration` as `transition-duration` or similar makes the motion match the speed of the spring.
+Creates an easing function (`easing`), the time until the spring comes to rest (`duration`, in ms), and a CSS `linear()` string (`css`) from a physical spring model. Setting `duration` as `transition-duration` or similar makes the motion match the speed of the spring. If the spring does not come to rest within `maxDuration`, the motion is cut off at `maxDuration` and moves to the target at the end.
 
 ```ts
 const { css, duration } = createSpringEasing({ stiffness: 200, damping: 15 });
 element.style.transition = `transform ${duration}ms ${css}`;
 ```
 
-| Option       | Type     | Description                                                                           |
-| ------------ | -------- | ------------------------------------------------------------------------------------- |
-| `stiffness?` | `number` | Stiffness of the spring. Higher values move faster. Defaults to `100`                 |
-| `damping?`   | `number` | Strength of damping. Lower values bounce more. Defaults to `10`                       |
-| `mass?`      | `number` | Mass. Higher values move more slowly. Defaults to `1`                                 |
-| `velocity?`  | `number` | Initial velocity (distance per second, with the whole distance as 1). Defaults to `0` |
-| Others       |          | Options for `createLinearEasing`                                                      |
+| Option         | Type     | Description                                                                           |
+| -------------- | -------- | ------------------------------------------------------------------------------------- |
+| `stiffness?`   | `number` | Stiffness of the spring. Higher values move faster. Defaults to `100`                 |
+| `damping?`     | `number` | Strength of damping. Lower values bounce more. Defaults to `10`                       |
+| `mass?`        | `number` | Mass. Higher values move more slowly. Defaults to `1`                                 |
+| `velocity?`    | `number` | Initial velocity (distance per second, with the whole distance as 1). Defaults to `0` |
+| `maxDuration?` | `number` | Upper limit (ms) when searching for the time until rest. Defaults to `60000`          |
+| Others         |          | Options for `createLinearEasing`                                                      |
 
 #### Types
 
-| Type                  | Description                                                        |
-| --------------------- | ------------------------------------------------------------------ |
-| `EasingFunction`      | `(t: number) => number`                                            |
-| `LinearEasingOptions` | Options for `createLinearEasing`                                   |
-| `SpringEasingOptions` | Options for `createSpringEasing`                                   |
-| `SpringEasing`        | Return value of `createSpringEasing` (`easing`, `duration`, `css`) |
+| Type                        | Description                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
+| `EasingFunction`            | `(t: number) => number`                                            |
+| `CreateLinearEasingOptions` | Options for `createLinearEasing`                                   |
+| `CreateSpringEasingOptions` | Options for `createSpringEasing`                                   |
+| `SpringEasing`              | Return value of `createSpringEasing` (`easing`, `duration`, `css`) |
 
 ## License
 

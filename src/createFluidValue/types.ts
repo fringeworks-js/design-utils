@@ -1,4 +1,4 @@
-export type FluidValueOptions = {
+export type CreateFluidValueOptions = {
   /**
    * `min` になる幅 (px)
    * @default 375

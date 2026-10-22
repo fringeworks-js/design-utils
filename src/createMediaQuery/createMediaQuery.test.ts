@@ -59,8 +59,45 @@ describe('createMediaQuery', () => {
     expect(minMax.down('md')).toBe('@media (max-width: 47.99875em)');
   });
 
+  it('between は順番が逆なら入れ替える', () => {
+    const mq = createMediaQuery(breakpoints);
+    expect(mq.between('lg', 'sm')).toBe('@media (640px <= width < 1024px)');
+  });
+
+  it('between は同じ幅ならエラー', () => {
+    const mq = createMediaQuery({ ...breakpoints, tablet: 768 });
+    expect(() => mq.between('md', 'tablet')).toThrow(RangeError);
+    expect(() => mq.between('md', 'md')).toThrow(RangeError);
+  });
+
+  it('unit: em と syntax: min-max の between', () => {
+    const mq = createMediaQuery(breakpoints, {
+      unit: 'em',
+      syntax: 'min-max',
+    });
+    expect(mq.between('sm', 'md')).toBe(
+      '@media (min-width: 40em) and (max-width: 47.99875em)',
+    );
+  });
+
   it('type: container', () => {
     const mq = createMediaQuery(breakpoints, { type: 'container' });
     expect(mq.up('md')).toBe('@container (width >= 768px)');
+  });
+
+  it('containerName', () => {
+    const mq = createMediaQuery(breakpoints, {
+      type: 'container',
+      containerName: 'sidebar',
+    });
+    expect(mq.up('md')).toBe('@container sidebar (width >= 768px)');
+    expect(mq.between('sm', 'md')).toBe(
+      '@container sidebar (640px <= width < 768px)',
+    );
+  });
+
+  it('type が media なら containerName は使わない', () => {
+    const mq = createMediaQuery(breakpoints, { containerName: 'sidebar' });
+    expect(mq.up('md')).toBe('@media (width >= 768px)');
   });
 });

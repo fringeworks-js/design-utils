@@ -33,6 +33,11 @@ describe('getPaperSize', () => {
     });
   });
 
+  it('定義していない名前はエラー', () => {
+    expect(() => getPaperSize('X' as any)).toThrow(RangeError);
+    expect(() => getPaperSize('toString' as any)).toThrow(RangeError);
+  });
+
   it('すべて縦向きで、次の番号は長辺が前の番号の短辺', () => {
     for (const { width, height } of Object.values(PAPER_SIZES)) {
       expect(width).toBeLessThan(height);

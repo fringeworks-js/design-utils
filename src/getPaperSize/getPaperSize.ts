@@ -1,8 +1,8 @@
+import { hasOwn } from '@fringeworks/utils/object/hasOwn';
 import { DEFAULT_DECIMALS } from '../_internal/round';
-import type { Size } from '../calculateObjectFit';
 import { convertUnit } from '../convertUnit';
 import { PAPER_SIZES } from './constants';
-import type { GetPaperSizeOptions, PaperSizeName } from './types';
+import type { GetPaperSizeOptions, PaperSizeName, Size } from './types';
 
 /**
  * 紙のサイズを返す
@@ -22,6 +22,10 @@ export default function getPaperSize(
     unit = 'mm',
     decimals = DEFAULT_DECIMALS,
   } = options;
+  // `toString` などのプロトタイプのキーを除くため、自身のプロパティかを確認する
+  if (!hasOwn(PAPER_SIZES, name)) {
+    throw new RangeError(`Unknown paper size: ${name}`);
+  }
   const { width, height } = PAPER_SIZES[name];
   const convert = (value: number) =>
     convertUnit(value, 'mm', unit, { decimals });

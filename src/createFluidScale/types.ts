@@ -1,14 +1,14 @@
-import type { FluidValueOptions } from '../createFluidValue';
-import type { ModularScaleOptions } from '../createModularScale';
+import type { CreateFluidValueOptions } from '../createFluidValue';
+import type { CreateModularScaleOptions } from '../createModularScale';
 
-export type FluidScaleOptions = FluidValueOptions & {
+export type CreateFluidScaleOptions = CreateFluidValueOptions & {
   /**
    * `minViewport` でのモジュラースケール
    */
-  min: Omit<ModularScaleOptions, 'decimals'>;
+  min: Omit<CreateModularScaleOptions, 'decimals'>;
 
   /**
    * `maxViewport` でのモジュラースケール
    */
-  max: Omit<ModularScaleOptions, 'decimals'>;
+  max: Omit<CreateModularScaleOptions, 'decimals'>;
 };

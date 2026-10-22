@@ -1,9 +1,9 @@
 import type {
+  CreateLinearEasingOptions,
   EasingFunction,
-  LinearEasingOptions,
 } from '../createLinearEasing';
 
-export type SpringEasingOptions = LinearEasingOptions & {
+export type CreateSpringEasingOptions = CreateLinearEasingOptions & {
   /**
    * ばねの硬さ\
    * 大きいほど速く動く
@@ -30,6 +30,13 @@ export type SpringEasingOptions = LinearEasingOptions & {
    * @default 0
    */
   velocity?: number;
+
+  /**
+   * 止まるまでの時間を探す上限 (ms)\
+   * この時間までに止まらない場合は、この時間で打ち切る (最後に目標の位置へ移る)
+   * @default 60000
+   */
+  maxDuration?: number;
 };
 
 export type SpringEasing = {

@@ -2,12 +2,11 @@ import { SQRT5_RATIO, scaleByRatio } from '../scaleByRatio';
 import type { ScaleBySqrt5Options } from './types';
 
 /**
- * valueに対して√5比になる値を返す\
+ * `value` に対して√5比になる値を返す
  *
- * √5比 (≈ 2.236)\
- * 黄金比と関連が深く対称性や均整の取れたデザインに活用される比率
+ * √5比 (≈ 2.236)
  *
- * - ギリシャ建築の柱の配置
+ * - 1:2 の長方形の、対角線と短い辺の比
  *
  * @param value
  * @param options

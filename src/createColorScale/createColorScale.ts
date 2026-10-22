@@ -1,7 +1,9 @@
 import round, { DEFAULT_DECIMALS } from '../_internal/round';
-import type { ColorScaleOptions } from './types';
+import type { CreateColorScaleOptions, DefaultColorScaleStep } from './types';
 
-const DEFAULT_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+const DEFAULT_STEPS = [
+  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+] as const satisfies readonly DefaultColorScaleStep[];
 
 /**
  * 1つの色から、段階ごとの色を CSS の `color-mix()` の文字列で作る
@@ -13,12 +15,12 @@ const DEFAULT_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
  * @param options
  * @returns 段階をキーにしたオブジェクト
  */
-export default function createColorScale(
-  color: string,
-  options: ColorScaleOptions = {},
-): Record<number, string> {
+export default function createColorScale<
+  const S extends number = DefaultColorScaleStep,
+>(color: string, options: CreateColorScaleOptions<S> = {}): Record<S, string> {
   const {
-    steps = DEFAULT_STEPS,
+    // steps を省略した場合、S は既定の DefaultColorScaleStep になる
+    steps = DEFAULT_STEPS as readonly number[] as readonly S[],
     baseStep = 500,
     space = 'oklch',
     light = 'white',
@@ -31,7 +33,7 @@ export default function createColorScale(
     return `color-mix(in ${space}, ${color} ${percentage}%, ${other})`;
   };
 
-  const result: Record<number, string> = {};
+  const result = {} as Record<S, string>;
   for (const step of steps) {
     if (step === baseStep) {
       result[step] = color;
