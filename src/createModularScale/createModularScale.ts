@@ -1,4 +1,4 @@
-import round, { DEFAULT_DECIMALS } from '../_internal/round';
+import round, { DEFAULT_DECIMALS } from '../_internal/_round';
 import _createModularScale from './_createModularScale';
 import type { CreateModularScaleOptions } from './types';
 

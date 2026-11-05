@@ -1,4 +1,4 @@
-import createVariableName from '../_internal/createVariableName';
+import createVariableName from '../_internal/_createVariableName';
 import type { CreateCssVariableReferenceOptions } from './types';
 
 /**

@@ -1,5 +1,5 @@
 import { hasOwn } from '@fringeworks/utils/object/hasOwn';
-import { DEFAULT_DECIMALS } from '../_internal/round';
+import { DEFAULT_DECIMALS } from '../_internal/_round';
 import { convertUnit } from '../convertUnit';
 import { PAPER_SIZES } from './constants';
 import type { GetPaperSizeOptions, PaperSizeName, Size } from './types';

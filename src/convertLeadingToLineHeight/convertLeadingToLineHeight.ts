@@ -1,4 +1,4 @@
-import round, { DEFAULT_DECIMALS } from '../_internal/round';
+import round, { DEFAULT_DECIMALS } from '../_internal/_round';
 import type { ConvertLeadingToLineHeightOptions } from './types';
 
 /**

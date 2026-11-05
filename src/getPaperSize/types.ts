@@ -2,7 +2,7 @@ import type { CssUnit } from '../convertUnit';
 import type { PAPER_SIZES } from './constants';
 
 // calculateObjectFit と共通で使う
-export type { Size } from '../_internal/types';
+export type { Size } from '../_internal/_types';
 
 /**
  * 紙のサイズの名前

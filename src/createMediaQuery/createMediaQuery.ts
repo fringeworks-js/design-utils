@@ -1,4 +1,4 @@
-import round from '../_internal/round';
+import round from '../_internal/_round';
 import type { CreateMediaQueryOptions, MediaQuery } from './types';
 
 /**

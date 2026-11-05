@@ -1,4 +1,4 @@
-import round from './round';
+import round from './_round';
 
 describe('round', () => {
   it('指定の桁数に丸める', () => {

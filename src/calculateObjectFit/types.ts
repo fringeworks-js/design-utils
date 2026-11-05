@@ -1,4 +1,4 @@
-import type { Size } from '../_internal/types';
+import type { Size } from '../_internal/_types';
 
 // getPaperSize と共通で使う
 export type { Size };
