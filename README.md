@@ -549,11 +549,22 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 
 ### Colors
 
-| Function                            | Description                                                 |
-| ----------------------------------- | ----------------------------------------------------------- |
-| `createColorScale(color, options?)` | Creates color steps from one color as `color-mix()` strings |
+| Function                                                 | Description                                                                             |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `createColorScale(color, options?)`                      | Creates color steps from one color as `color-mix()` strings                             |
+| `adjustColor(color, options)`                            | Changes the lightness, chroma, and hue of a color in OKLCH                              |
+| `changeAlpha(color, alpha)`                              | Replaces the alpha of a color                                                           |
+| `mixColors(color, other, ratio)`                         | Mixes two colors in OKLCH                                                               |
+| `calculateContrastRatio(color, other, options?)`         | Returns the WCAG 2 contrast ratio of two colors                                         |
+| `ensureContrast(color, against, ratio)`                  | Changes the lightness of a color until its contrast ratio with another color is reached |
+| `chooseReadableColor(background, candidates?, options?)` | Chooses the most readable color on a background from the candidates                     |
 
-For color space conversion, contrast ratios, and similar calculations, use a library such as [culori](https://culorijs.org/). This package focuses on creating strings for CSS color functions.
+The color functions fall into two groups by where the color is calculated.
+
+- **In CSS** (`createColorScale`): returns strings of CSS color functions, and the browser calculates the colors. You can use CSS variables such as `var(--brand)`, but the browsers you target must support the generated functions.
+- **In JavaScript** (the others): calculates the colors and returns hex colors (`#rrggbb`, or `#rrggbbaa` when the alpha is below 1), which older browsers also support. They take concrete colors (`AbsoluteColor` from `@fringeworks/types`: hex colors, color functions such as `rgb()` and `oklch()`, and color names). Values decided at render time, such as `var()` and `currentColor`, are type errors. If a color cannot be read (such as `'#zzz'`), the function returns `undefined`. Colors outside sRGB are brought into it by reducing the chroma (the gamut mapping of CSS Color 4).
+
+The calculations in JavaScript use [culori](https://culorijs.org/) internally.
 
 #### `createColorScale`
 
@@ -585,12 +596,116 @@ createColorScale('var(--brand)');
 | `dark?`     | `string`       | Color mixed into steps above `baseStep`. Defaults to `'black'` |
 | `decimals?` | `number`       | Number of decimal places of the percentages. Defaults to `3`   |
 
+#### `adjustColor`
+
+```ts
+adjustColor(color: AbsoluteColor, options: AdjustColorOptions): HexColor | undefined
+```
+
+Changes the lightness, chroma, and hue of a color in OKLCH. Each option is added to the OKLCH value. The lightness is kept within 0–1, the chroma at 0 or above, and the hue is rotated within 0–360 degrees. Achromatic colors (white, grays, and so on) have no hue, so rotating the hue does not change them.
+
+```ts
+adjustColor('#2f6fde', { lightness: -0.06 }); // a slightly darker blue
+adjustColor('#2f6fde', { chroma: -0.15 }); // a gray with a hint of blue
+```
+
+| Option       | Type     | Description                                                                               |
+| ------------ | -------- | ----------------------------------------------------------------------------------------- |
+| `lightness?` | `number` | Added to the OKLCH lightness (0–1). Negative values darken the color. Defaults to `0`     |
+| `chroma?`    | `number` | Added to the OKLCH chroma (0 or above; up to about 0.37 for sRGB colors). Defaults to `0` |
+| `hue?`       | `number` | Angle (degrees) added to the OKLCH hue. Defaults to `0`                                   |
+
+#### `changeAlpha`
+
+```ts
+changeAlpha(color: AbsoluteColor, alpha: number): HexColor | undefined
+```
+
+Replaces the alpha of a color with `alpha` (0 for transparent, 1 for opaque). Values outside the range are clamped.
+
+```ts
+changeAlpha('#2f6fde', 0.5); // '#2f6fde80'
+```
+
+#### `mixColors`
+
+```ts
+mixColors(color: AbsoluteColor, other: AbsoluteColor, ratio: number): HexColor | undefined
+```
+
+Mixes two colors in OKLCH. `ratio` is the proportion of `color` (0 for `other` only, 1 for `color` only), and the result is the same as CSS `color-mix(in oklch, color <ratio>, other)`. Like CSS, the alpha is mixed premultiplied, and an achromatic color takes the hue of the other color. Returns `undefined` if either color cannot be read.
+
+```ts
+mixColors('#2f6fde', '#ffffff', 0.2); // '#d5e3fb' (20% blue, 80% white)
+```
+
+#### `calculateContrastRatio`
+
+```ts
+calculateContrastRatio(color: AbsoluteColor, other: AbsoluteColor, options?: CalculateContrastRatioOptions): number | undefined
+```
+
+Returns the WCAG 2 contrast ratio (1–21) of two colors. The alpha is ignored, and the colors are compared as opaque. Returns `undefined` if either color cannot be read.
+
+```ts
+calculateContrastRatio('#2f6fde', '#ffffff'); // 4.72
+```
+
+| Option      | Type     | Description                               |
+| ----------- | -------- | ----------------------------------------- |
+| `decimals?` | `number` | Number of decimal places. Defaults to `3` |
+
+#### `ensureContrast`
+
+```ts
+ensureContrast(color: AbsoluteColor, against: AbsoluteColor, ratio: number): HexColor | undefined
+```
+
+Changes the lightness of a color in OKLCH until its WCAG 2 contrast ratio with `against` reaches `ratio` (clamped to 1–21). If the ratio is already reached, the original color is returned. Otherwise the color is darkened when `against` is light and lightened when it is dark, using the lightness closest to the original that reaches the ratio. If even white or black does not reach it, white or black is returned. The chroma and hue are kept. Returns `undefined` if either color cannot be read.
+
+Use it, for example, to make a light border or focus outline distinguishable on a white background.
+
+```ts
+ensureContrast('#2f6fde', '#ffffff', 3); // '#2f6fde' (already reached)
+ensureContrast('#ffeb3b', '#ffffff', 3); // '#a79500' (a darkened yellow)
+```
+
+#### `chooseReadableColor`
+
+```ts
+chooseReadableColor<const C extends AbsoluteColor = '#ffffff' | '#000000'>(background: AbsoluteColor, candidates?: readonly C[], options?: ChooseReadableColorOptions): C | undefined
+```
+
+Chooses the candidate with the highest WCAG 2 contrast ratio on `background`, and returns it as the string that was passed. When candidates have the same ratio, the earlier one is chosen. Candidates that cannot be read are skipped. Returns `undefined` if `background` cannot be read or no candidate can be read.
+
+With `minRatio`, the candidates are checked in order and the first one whose ratio is `minRatio` or above is chosen (if none is, the one with the highest ratio). Use it when choosing between white and black for mid-lightness colors (such as pink) where white is preferred even if its ratio is slightly lower.
+
+```ts
+chooseReadableColor('#2f6fde'); // '#ffffff'
+chooseReadableColor('#ffeb3b', ['white', 'black']); // 'black'
+chooseReadableColor('#e91e63'); // '#000000' (white 4.3, black 4.8)
+chooseReadableColor('#e91e63', undefined, { minRatio: 3 }); // '#ffffff'
+```
+
+| Parameter     | Type                         | Description                                            |
+| ------------- | ---------------------------- | ------------------------------------------------------ |
+| `background`  | `AbsoluteColor`              | Background color                                       |
+| `candidates?` | `readonly C[]`               | Candidate colors. Defaults to `['#ffffff', '#000000']` |
+| `options?`    | `ChooseReadableColorOptions` | Options below                                          |
+
+| Option      | Type     | Description                                                                             |
+| ----------- | -------- | --------------------------------------------------------------------------------------- |
+| `minRatio?` | `number` | Contrast ratio that is enough to choose a candidate. If omitted, the highest ratio wins |
+
 #### Types
 
-| Type                         | Description                                                   |
-| ---------------------------- | ------------------------------------------------------------- |
-| `CreateColorScaleOptions<S>` | Options for `createColorScale`                                |
-| `DefaultColorScaleStep`      | Default steps of `createColorScale` (`50 \| 100 \| … \| 950`) |
+| Type                            | Description                                                   |
+| ------------------------------- | ------------------------------------------------------------- |
+| `CreateColorScaleOptions<S>`    | Options for `createColorScale`                                |
+| `DefaultColorScaleStep`         | Default steps of `createColorScale` (`50 \| 100 \| … \| 950`) |
+| `AdjustColorOptions`            | Options for `adjustColor`                                     |
+| `CalculateContrastRatioOptions` | Options for `calculateContrastRatio`                          |
+| `ChooseReadableColorOptions`    | Options for `chooseReadableColor`                             |
 
 ### Easing
 

@@ -549,11 +549,22 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 
 ### 色
 
-| 関数                                | 説明                                                   |
-| ----------------------------------- | ------------------------------------------------------ |
-| `createColorScale(color, options?)` | 1つの色から段階ごとの色を `color-mix()` の文字列で作る |
+| 関数                                                     | 説明                                                     |
+| -------------------------------------------------------- | -------------------------------------------------------- |
+| `createColorScale(color, options?)`                      | 1つの色から段階ごとの色を `color-mix()` の文字列で作る   |
+| `adjustColor(color, options)`                            | 色の明るさ・彩度・色相を OKLCH で変える                  |
+| `changeAlpha(color, alpha)`                              | 色の透明度を置き換える                                   |
+| `mixColors(color, other, ratio)`                         | 2つの色を OKLCH で混ぜる                                 |
+| `calculateContrastRatio(color, other, options?)`         | 2つの色の WCAG 2 のコントラスト比を返す                  |
+| `ensureContrast(color, against, ratio)`                  | 比べる色とのコントラスト比が届くまで、色の明るさを変える |
+| `chooseReadableColor(background, candidates?, options?)` | 背景の色の上で最も読みやすい色を候補から選ぶ             |
 
-色空間の変換やコントラスト比の計算などは、[culori](https://culorijs.org/) などのライブラリを使ってください。このパッケージでは、CSS の色の関数の文字列を作ることに絞っています。
+色の関数は、色をどこで計算するかで2つに分かれます。
+
+- **CSS で計算する**（`createColorScale`）: CSS の色の関数の文字列を返し、色の計算はブラウザーが行います。`var(--brand)` のような CSS 変数を使えますが、作った関数が対象のブラウザーで使えることが前提です。
+- **JavaScript で計算する**（そのほか）: 色を計算して、古いブラウザーでも使える16進数の色（`#rrggbb`。透明度が 1 未満なら `#rrggbbaa`）を返します。受け取るのは具体的な色（`@fringeworks/types` の `AbsoluteColor`。16進数の色・`rgb()` や `oklch()` などの色の関数・色の名前）で、`var()` や `currentColor` などの描くときまで決まらない値は型エラーになります。読み取れない色（`'#zzz'` など）を渡すと `undefined` を返します。sRGB に収まらない色は、彩度を下げて収めます（CSS Color 4 の gamut mapping）。
+
+JavaScript での計算には、内部で [culori](https://culorijs.org/) を使っています。
 
 #### `createColorScale`
 
@@ -585,12 +596,116 @@ createColorScale('var(--brand)');
 | `dark?`     | `string`       | `baseStep` より大きい段階で混ぜる色。デフォルトは `'black'` |
 | `decimals?` | `number`       | 割合（%）の小数点以下の桁数。デフォルトは `3`               |
 
+#### `adjustColor`
+
+```ts
+adjustColor(color: AbsoluteColor, options: AdjustColorOptions): HexColor | undefined
+```
+
+色の明るさ・彩度・色相を OKLCH で変えます。各オプションの値を OKLCH の値に足し、明るさは 0〜1、彩度は 0 以上に収め、色相は 0〜360 度で回します。無彩色（白・灰色など）は色相を持たないので、色相を回しても変わりません。
+
+```ts
+adjustColor('#2f6fde', { lightness: -0.06 }); // 少し暗い青
+adjustColor('#2f6fde', { chroma: -0.15 }); // 青みを帯びた灰色
+```
+
+| オプション   | 型       | 説明                                                                          |
+| ------------ | -------- | ----------------------------------------------------------------------------- |
+| `lightness?` | `number` | OKLCH の明るさ（0〜1）に足す値。負の数で暗くする。デフォルトは `0`            |
+| `chroma?`    | `number` | OKLCH の彩度（0 以上。sRGB の色はおよそ 0.37 まで）に足す値。デフォルトは `0` |
+| `hue?`       | `number` | OKLCH の色相に足す角度（度）。デフォルトは `0`                                |
+
+#### `changeAlpha`
+
+```ts
+changeAlpha(color: AbsoluteColor, alpha: number): HexColor | undefined
+```
+
+色の透明度を `alpha`（0 が透明、1 が不透明）に置き換えます。範囲の外の値は端に収めます。
+
+```ts
+changeAlpha('#2f6fde', 0.5); // '#2f6fde80'
+```
+
+#### `mixColors`
+
+```ts
+mixColors(color: AbsoluteColor, other: AbsoluteColor, ratio: number): HexColor | undefined
+```
+
+2つの色を OKLCH で混ぜます。`ratio` は `color` の割合（0 で `other` だけ、1 で `color` だけ）で、CSS の `color-mix(in oklch, color <ratio>, other)` と同じ結果になります。CSS と同じく、透明度は色に掛けた値（premultiplied）で混ぜ、無彩色には相手の色相を使います。どちらかの色を読み取れない場合は `undefined` を返します。
+
+```ts
+mixColors('#2f6fde', '#ffffff', 0.2); // '#d5e3fb'（青が 20%、白が 80%）
+```
+
+#### `calculateContrastRatio`
+
+```ts
+calculateContrastRatio(color: AbsoluteColor, other: AbsoluteColor, options?: CalculateContrastRatioOptions): number | undefined
+```
+
+2つの色の WCAG 2 のコントラスト比（1〜21）を返します。透明度は考えず、不透明な色として比べます。どちらかの色を読み取れない場合は `undefined` を返します。
+
+```ts
+calculateContrastRatio('#2f6fde', '#ffffff'); // 4.72
+```
+
+| オプション  | 型       | 説明                               |
+| ----------- | -------- | ---------------------------------- |
+| `decimals?` | `number` | 小数点以下の桁数。デフォルトは `3` |
+
+#### `ensureContrast`
+
+```ts
+ensureContrast(color: AbsoluteColor, against: AbsoluteColor, ratio: number): HexColor | undefined
+```
+
+`against` との WCAG 2 のコントラスト比が `ratio`（1〜21 に収める）に届くまで、色の明るさを OKLCH で変えます。すでに届いている場合は、元の色をそのまま返します。届いていない場合は、`against` が明るい色なら暗く、暗い色なら明るくし、届く中で最も元の色に近い明るさにします。白・黒まで変えても届かない場合は、白・黒まで変えた色を返します。彩度と色相はそのままです。どちらかの色を読み取れない場合は `undefined` を返します。
+
+薄い色の枠やフォーカスの線を、白い背景の上で見分けられるようにするときなどに使います。
+
+```ts
+ensureContrast('#2f6fde', '#ffffff', 3); // '#2f6fde'（すでに届いている）
+ensureContrast('#ffeb3b', '#ffffff', 3); // '#a79500'（暗くした黄色）
+```
+
+#### `chooseReadableColor`
+
+```ts
+chooseReadableColor<const C extends AbsoluteColor = '#ffffff' | '#000000'>(background: AbsoluteColor, candidates?: readonly C[], options?: ChooseReadableColorOptions): C | undefined
+```
+
+`background` の上で WCAG 2 のコントラスト比が最も高い候補を選び、渡された文字列のまま返します。同じ比の候補があれば、先の候補を選びます。読み取れない候補は飛ばします。`background` を読み取れない場合と、読み取れる候補が無い場合は `undefined` を返します。
+
+`minRatio` を指定すると、候補を順に見て、比が `minRatio` 以上の最初の候補を選びます（満たす候補が無ければ、比が最も高い候補）。白か黒かを選ぶとき、比がわずかに低くても白を使いたい中間の明るさの色（ピンクなど）で使います。
+
+```ts
+chooseReadableColor('#2f6fde'); // '#ffffff'
+chooseReadableColor('#ffeb3b', ['white', 'black']); // 'black'
+chooseReadableColor('#e91e63'); // '#000000'（白 4.3、黒 4.8）
+chooseReadableColor('#e91e63', undefined, { minRatio: 3 }); // '#ffffff'
+```
+
+| 引数          | 型                           | 説明                                            |
+| ------------- | ---------------------------- | ----------------------------------------------- |
+| `background`  | `AbsoluteColor`              | 背景の色                                        |
+| `candidates?` | `readonly C[]`               | 候補の色。デフォルトは `['#ffffff', '#000000']` |
+| `options?`    | `ChooseReadableColorOptions` | 下記のオプション                                |
+
+| オプション  | 型       | 説明                                                           |
+| ----------- | -------- | -------------------------------------------------------------- |
+| `minRatio?` | `number` | 満たせば選ぶコントラスト比。省略すると、比が最も高い候補を選ぶ |
+
 #### 型
 
-| 型                           | 説明                                                       |
-| ---------------------------- | ---------------------------------------------------------- |
-| `CreateColorScaleOptions<S>` | `createColorScale` のオプション                            |
-| `DefaultColorScaleStep`      | `createColorScale` の既定の段階（`50 \| 100 \| … \| 950`） |
+| 型                              | 説明                                                       |
+| ------------------------------- | ---------------------------------------------------------- |
+| `CreateColorScaleOptions<S>`    | `createColorScale` のオプション                            |
+| `DefaultColorScaleStep`         | `createColorScale` の既定の段階（`50 \| 100 \| … \| 950`） |
+| `AdjustColorOptions`            | `adjustColor` のオプション                                 |
+| `CalculateContrastRatioOptions` | `calculateContrastRatio` のオプション                      |
+| `ChooseReadableColorOptions`    | `chooseReadableColor` のオプション                         |
 
 ### イージング
 
