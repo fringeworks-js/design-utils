@@ -6,14 +6,20 @@ import { fileURLToPath } from 'node:url';
  * 公開している各機能のフォルダーについて、export の規則を検査する
  *
  * - 各フォルダーの index は default export に加えて、フォルダー名と同じ名前で named export する
- * - ルートの index は、各フォルダーの named export を引き継ぐ
+ * - カテゴリーとルートの index は、各フォルダーの named export を引き継ぐ
  *
  * `export *` は default export を引き継がないため、
- * フォルダー名と同じ名前の export を書き忘れると、ルートから黙って消える。
+ * フォルダー名と同じ名前の export を書き忘れると、カテゴリーとルートから黙って消える。
  */
 const root = dirname(fileURLToPath(import.meta.url));
-const folders = readdirSync(root).filter(
-  (name) => !name.startsWith('_') && statSync(join(root, name)).isDirectory(),
+const isPublicDir = (path: string, name: string) =>
+  !name.startsWith('_') && statSync(join(path, name)).isDirectory();
+
+const categories = readdirSync(root).filter((name) => isPublicDir(root, name));
+const folders = categories.flatMap((category) =>
+  readdirSync(join(root, category))
+    .filter((name) => isPublicDir(join(root, category), name))
+    .map((name) => [category, name] as const),
 );
 
 describe('exports', () => {
@@ -27,16 +33,19 @@ describe('exports', () => {
     expect(folders.length).toBeGreaterThan(0);
   });
 
-  describe.each(folders)('%s', (name) => {
+  describe.each(folders)('%s/%s', (category, name) => {
     it('フォルダー名と同じ名前で default export と同じものを export している', async () => {
-      const module = await import(`./${name}/index.ts`);
+      const module = await import(`./${category}/${name}/index.ts`);
       expect(module[name]).toBeDefined();
       expect(module[name]).toBe(module.default);
     });
 
-    it('ルートから export されている', async () => {
-      const module = await import(`./${name}/index.ts`);
+    it('カテゴリーとルートから export されている', async () => {
+      const module = await import(`./${category}/${name}/index.ts`);
+      const categoryModule = await import(`./${category}/index.ts`);
+      expect(categoryModule[name]).toBe(module[name]);
       expect(rootModule[name]).toBe(module[name]);
+      expect(categoryModule.default).toBeUndefined();
     });
   });
 });

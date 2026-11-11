@@ -8,17 +8,22 @@
 
 ```bash
 npm install @fringeworks/design-utils
-# or
-pnpm add @fringeworks/design-utils
 ```
 
 ## Usage
 
-Functions, types, and constants can be imported by the same name from the root or from a per-function path. A per-function path also provides its function as the default export.
+Functions, types, and constants can be imported by the same name from the root, a category, or a per-function path. The categories correspond to the API headings below (`ratio`, `unit`, `scale`, `size`, `css`, `color`, `easing`).
 
 ```ts
 import { scaleByGolden } from '@fringeworks/design-utils';
-import scaleByGolden from '@fringeworks/design-utils/scaleByGolden';
+import { scaleByGolden } from '@fringeworks/design-utils/ratio';
+import { scaleByGolden } from '@fringeworks/design-utils/ratio/scaleByGolden';
+```
+
+A per-function path also provides its function as the default export.
+
+```ts
+import scaleByGolden from '@fringeworks/design-utils/ratio/scaleByGolden';
 ```
 
 Nothing depends on the DOM, so you can also use it to generate design tokens at build time or on the server.
@@ -339,7 +344,7 @@ scale(0); // 'clamp(1rem, 0.896rem + 0.442vw, 1.25rem)'
 | `CreateFluidValueOptions`   | Options for `createFluidValue`   |
 | `CreateFluidScaleOptions`   | Options for `createFluidScale`   |
 
-### Sizes and layout
+### Sizes
 
 | Function                                  | Description                                                                 |
 | ----------------------------------------- | --------------------------------------------------------------------------- |
@@ -558,11 +563,13 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 | `calculateContrastRatio(color, other, options?)`         | Returns the WCAG 2 contrast ratio of two colors                                         |
 | `ensureContrast(color, against, ratio)`                  | Changes the lightness of a color until its contrast ratio with another color is reached |
 | `chooseReadableColor(background, candidates?, options?)` | Chooses the most readable color on a background from the candidates                     |
+| `createAccentColor(color, options?)`                     | Creates an accent color that goes with a color                                          |
+| `createHarmonyColors(color, options?)`                   | Creates colors in a harmony relationship on the color wheel                             |
 
 The color functions fall into two groups by where the color is calculated.
 
 - **In CSS** (`createColorScale`): returns strings of CSS color functions, and the browser calculates the colors. You can use CSS variables such as `var(--brand)`, but the browsers you target must support the generated functions.
-- **In JavaScript** (the others): calculates the colors and returns hex colors (`#rrggbb`, or `#rrggbbaa` when the alpha is below 1), which older browsers also support. They take concrete colors (`AbsoluteColor` from `@fringeworks/types`: hex colors, color functions such as `rgb()` and `oklch()`, and color names). Values decided at render time, such as `var()` and `currentColor`, are type errors. If a color cannot be read (such as `'#zzz'`), the function returns `undefined`. Colors outside sRGB are brought into it by reducing the chroma (the gamut mapping of CSS Color 4).
+- **In JavaScript** (the others): calculates the colors and returns hex colors (`#rrggbb`, or `#rrggbbaa` when the alpha is below 1), which older browsers also support. They take concrete colors (`AbsoluteColor`: hex colors, color functions such as `rgb()` and `oklch()`, and color names). Values decided at render time, such as `var()` and `currentColor`, are type errors. If a color cannot be read (such as `'#zzz'`), the function returns `undefined`. Colors outside sRGB are brought into it by reducing the chroma (the gamut mapping of CSS Color 4).
 
 The calculations in JavaScript use [culori](https://culorijs.org/) internally.
 
@@ -697,15 +704,97 @@ chooseReadableColor('#e91e63', undefined, { minRatio: 3 }); // '#ffffff'
 | ----------- | -------- | --------------------------------------------------------------------------------------- |
 | `minRatio?` | `number` | Contrast ratio that is enough to choose a candidate. If omitted, the highest ratio wins |
 
+#### `createAccentColor`
+
+```ts
+createAccentColor(color: AbsoluteColor, options?: CreateAccentColorOptions): HexColor | undefined
+```
+
+Creates an accent color that goes with a color (such as a primary color). Just pass the primary color to get a color based on color harmony theory, Material Design 3, and WCAG. Returns `undefined` if `color` or `background` cannot be read.
+
+The hue is rotated in OKLCH (60° by default, the same angle as the Material Design 3 tertiary color), and the lightness is decided by the contrast ratio with the background. "Accent color" means two different things depending on the design system, so choose one with `emphasis`.
+
+- **`'strong'` (default)**: A color that stands out. Placed next to the primary color, it catches the eye as a separate color. The chroma is kept. The color is made deeper than the original (moved away from the background) so that its contrast ratio with the background is 4.5 or more, which meets WCAG 1.4.3 even with white text on it. If the original color is already deep enough (a ratio of 8 or more with the background), making it deeper would bring it close to black (white on a dark background), so it is moved toward the background and made lighter instead. Either way, the OKLCH lightness differs from the original by about 0.05 or more
+- **`'subtle'`**: A quiet color for surfaces close to the background, such as the background of hovered or selected items. The chroma is 1/4 of the original. The contrast ratio with the background is 1.1 on a light background and 1.3 on a dark background (differences are harder to see on a dark background, so it is moved further away)
+
+```ts
+createAccentColor('#2563eb'); // '#971ca7'
+createAccentColor('#2563eb', { emphasis: 'subtle' }); // '#ffefff'
+createAccentColor('#60a5fa', { background: '#121212' }); // '#d495f1'
+createAccentColor('#2563eb', { hue: 'complementary' }); // '#835a00'
+```
+
+Things to know when using it
+
+- For text on a `'subtle'` surface, use white or black, whichever is more readable (`chooseReadableColor`). Text in the `'strong'` color loses contrast by the amount of the surface, starting from 4.5 against the background, and may not meet WCAG 1.4.3
+- With `'strong'`, whether the color is made deeper or lighter switches around a ratio of 8 between the original color and the background. Two colors with slightly different ratios may get accents with quite different lightness
+- Achromatic colors (white, gray, black) have no hue, so the accent is an achromatic color that differs only in lightness. To get a colored accent, pass a colored color
+- The lightness difference (about 0.05 or more) may change slightly when the color is fitted into sRGB. The contrast ratio with the background is checked on the fitted color
+- If you want a whole color scheme with primary, secondary, neutral colors and so on, [@material/material-color-utilities](https://www.npmjs.com/package/@material/material-color-utilities) is available. `createAccentColor` keeps the color you chose as it is and returns one color that goes with it
+
+| Option        | Type                     | Description                                                                                                          |
+| ------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `emphasis?`   | `AccentEmphasis`         | `'strong'` (a color that stands out) or `'subtle'` (a quiet color). Defaults to `'strong'`                           |
+| `background?` | `AbsoluteColor`          | Background color the accent color is placed on. Defaults to `'#ffffff'`                                              |
+| `hue?`        | `number \| ColorHarmony` | Angle (degrees) to rotate the hue from the original. A harmony name can also be used (table below). Defaults to `60` |
+
+How to choose `hue`. Whichever you choose, the lightness follows the rule of `emphasis`.
+
+| `hue`                  | Angle | When to choose                                                   |
+| ---------------------- | ----- | ---------------------------------------------------------------- |
+| Omitted                | 60°   | To use it with the primary color, blending in while standing out |
+| `'analogous'`          | 30°   | For a quiet accent that blends in with the primary color         |
+| `'square'`             | 90°   | Between triadic and analogous                                    |
+| `'triadic'`            | 120°  | For a clearly different color                                    |
+| `'splitComplementary'` | 150°  | For contrast that is gentler than complementary                  |
+| `'complementary'`      | 180°  | For the strongest contrast                                       |
+
+#### `createHarmonyColors`
+
+```ts
+createHarmonyColors(color: AbsoluteColor, options?: CreateHarmonyColorsOptions): HexColor[] | undefined
+```
+
+Creates colors in a harmony relationship on the color wheel by rotating the hue in OKLCH. The original color comes first, followed by the others in ascending order of their angle from the original. The lightness and chroma are kept. Achromatic colors (white, gray, black) have no hue, so the same color is repeated. Returns `undefined` if `color` cannot be read.
+
+```ts
+createHarmonyColors('#2563eb'); // ['#2563eb', '#d10e2e', '#008b00']
+createHarmonyColors('#2563eb', { harmony: 'analogous' }); // ['#2563eb', '#7a49df', '#007bb2']
+```
+
+The lightness is not changed, so the contrast with the background is not guaranteed. To make the colors distinguishable on a background, combine it with `ensureContrast`.
+
+| Option     | Type           | Description                                   |
+| ---------- | -------------- | --------------------------------------------- |
+| `harmony?` | `ColorHarmony` | Harmony relationship. Defaults to `'triadic'` |
+
+How to choose `harmony`.
+
+| `harmony`              | Colors returned (angle from the original) | When to choose                                                                                                                         |
+| ---------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `'analogous'`          | 0°, 30°, 330°                             | To blend in with a calm, unified feel. Some colors are hard to tell apart, so it does not suit uses that need distinction              |
+| `'complementary'`      | 0°, 180°                                  | To contrast two colors clearly. Some pairs, such as red and green, can be hard to tell apart for people with color vision deficiencies |
+| `'splitComplementary'` | 0°, 150°, 210°                            | For contrast that is gentler than complementary                                                                                        |
+| `'triadic'` (default)  | 0°, 120°, 240°                            | To tell three things apart (chart series, category colors, and so on)                                                                  |
+| `'square'`             | 0°, 90°, 180°, 270°                       | To tell four things apart. It tends to look busy, so use one color as the main one and the others sparingly                            |
+
 #### Types
 
-| Type                            | Description                                                   |
-| ------------------------------- | ------------------------------------------------------------- |
-| `CreateColorScaleOptions<S>`    | Options for `createColorScale`                                |
-| `DefaultColorScaleStep`         | Default steps of `createColorScale` (`50 \| 100 \| … \| 950`) |
-| `AdjustColorOptions`            | Options for `adjustColor`                                     |
-| `CalculateContrastRatioOptions` | Options for `calculateContrastRatio`                          |
-| `ChooseReadableColorOptions`    | Options for `chooseReadableColor`                             |
+| Type                            | Description                                                                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `CreateColorScaleOptions<S>`    | Options for `createColorScale`                                                                                          |
+| `DefaultColorScaleStep`         | Default steps of `createColorScale` (`50 \| 100 \| … \| 950`)                                                           |
+| `AdjustColorOptions`            | Options for `adjustColor`                                                                                               |
+| `CalculateContrastRatioOptions` | Options for `calculateContrastRatio`                                                                                    |
+| `ChooseReadableColorOptions`    | Options for `chooseReadableColor`                                                                                       |
+| `CreateAccentColorOptions`      | Options for `createAccentColor`                                                                                         |
+| `AccentEmphasis`                | Strength of an accent color (`'strong' \| 'subtle'`)                                                                    |
+| `CreateHarmonyColorsOptions`    | Options for `createHarmonyColors`                                                                                       |
+| `ColorHarmony`                  | Harmony relationship (`'analogous' \| 'complementary' \| 'splitComplementary' \| 'triadic' \| 'square'`)                |
+| `AbsoluteColor`                 | A concrete color the color functions take (`HexColor \| FunctionalColor \| NamedColor`; a type of `@fringeworks/types`) |
+| `HexColor`                      | A hex color (`#${string}`), returned by the color functions (a type of `@fringeworks/types`)                            |
+| `FunctionalColor`               | A color written with a color function such as `rgb()`, `hsl()`, or `oklch()` (a type of `@fringeworks/types`)           |
+| `NamedColor`                    | CSS color names (the 148 names and `transparent`; a type of `@fringeworks/types`)                                       |
 
 ### Easing
 

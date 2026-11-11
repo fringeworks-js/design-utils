@@ -8,17 +8,22 @@
 
 ```bash
 npm install @fringeworks/design-utils
-# または
-pnpm add @fringeworks/design-utils
 ```
 
 ## 使い方
 
-関数・型・定数は、ルートと関数単位のパスのどちらからでも同じ名前で import できます。関数単位のパスでは、その関数を default import することもできます。
+関数・型・定数は、ルート・カテゴリー・関数単位のどのパスからでも同じ名前で import できます。カテゴリーは、下の API の見出し（`ratio`・`unit`・`scale`・`size`・`css`・`color`・`easing`）です。
 
 ```ts
 import { scaleByGolden } from '@fringeworks/design-utils';
-import scaleByGolden from '@fringeworks/design-utils/scaleByGolden';
+import { scaleByGolden } from '@fringeworks/design-utils/ratio';
+import { scaleByGolden } from '@fringeworks/design-utils/ratio/scaleByGolden';
+```
+
+関数単位のパスでは、その関数を default import することもできます。
+
+```ts
+import scaleByGolden from '@fringeworks/design-utils/ratio/scaleByGolden';
 ```
 
 DOM には依存しないため、ビルド時のデザイントークンの生成やサーバーサイドでも使えます。
@@ -339,7 +344,7 @@ scale(0); // 'clamp(1rem, 0.896rem + 0.442vw, 1.25rem)'
 | `CreateFluidValueOptions`   | `createFluidValue` のオプション   |
 | `CreateFluidScaleOptions`   | `createFluidScale` のオプション   |
 
-### サイズ・レイアウト
+### サイズ
 
 | 関数                                      | 説明                                                      |
 | ----------------------------------------- | --------------------------------------------------------- |
@@ -558,11 +563,13 @@ mq.only('md'); // '@media (768px <= width < 1024px)'
 | `calculateContrastRatio(color, other, options?)`         | 2つの色の WCAG 2 のコントラスト比を返す                  |
 | `ensureContrast(color, against, ratio)`                  | 比べる色とのコントラスト比が届くまで、色の明るさを変える |
 | `chooseReadableColor(background, candidates?, options?)` | 背景の色の上で最も読みやすい色を候補から選ぶ             |
+| `createAccentColor(color, options?)`                     | 1つの色に合うアクセントカラーを作る                      |
+| `createHarmonyColors(color, options?)`                   | 色相環の上で調和の関係にある色を作る                     |
 
 色の関数は、色をどこで計算するかで2つに分かれます。
 
 - **CSS で計算する**（`createColorScale`）: CSS の色の関数の文字列を返し、色の計算はブラウザーが行います。`var(--brand)` のような CSS 変数を使えますが、作った関数が対象のブラウザーで使えることが前提です。
-- **JavaScript で計算する**（そのほか）: 色を計算して、古いブラウザーでも使える16進数の色（`#rrggbb`。透明度が 1 未満なら `#rrggbbaa`）を返します。受け取るのは具体的な色（`@fringeworks/types` の `AbsoluteColor`。16進数の色・`rgb()` や `oklch()` などの色の関数・色の名前）で、`var()` や `currentColor` などの描くときまで決まらない値は型エラーになります。読み取れない色（`'#zzz'` など）を渡すと `undefined` を返します。sRGB に収まらない色は、彩度を下げて収めます（CSS Color 4 の gamut mapping）。
+- **JavaScript で計算する**（そのほか）: 色を計算して、古いブラウザーでも使える16進数の色（`#rrggbb`。透明度が 1 未満なら `#rrggbbaa`）を返します。受け取るのは具体的な色（`AbsoluteColor`。16進数の色・`rgb()` や `oklch()` などの色の関数・色の名前）で、`var()` や `currentColor` などの描くときまで決まらない値は型エラーになります。読み取れない色（`'#zzz'` など）を渡すと `undefined` を返します。sRGB に収まらない色は、彩度を下げて収めます（CSS Color 4 の gamut mapping）。
 
 JavaScript での計算には、内部で [culori](https://culorijs.org/) を使っています。
 
@@ -697,15 +704,97 @@ chooseReadableColor('#e91e63', undefined, { minRatio: 3 }); // '#ffffff'
 | ----------- | -------- | -------------------------------------------------------------- |
 | `minRatio?` | `number` | 満たせば選ぶコントラスト比。省略すると、比が最も高い候補を選ぶ |
 
+#### `createAccentColor`
+
+```ts
+createAccentColor(color: AbsoluteColor, options?: CreateAccentColorOptions): HexColor | undefined
+```
+
+1つの色（プライマリカラーなど）に合うアクセントカラーを作ります。プライマリカラーを渡すだけで、色彩調和論・Material Design 3・WCAG に基づいた色が得られます。`color` か `background` を読み取れない場合は `undefined` を返します。
+
+色相を OKLCH で回し（既定は 60°。Material Design 3 の tertiary と同じ角度）、明るさを背景とのコントラスト比で決めます。アクセントカラーには、デザインシステムによって2つの意味があるので、`emphasis` で選びます。
+
+- **`'strong'`（既定）**: 目立たせる色。プライマリと並べて、別の色として目に留まります。彩度は元の色のままです。元の色より濃くして（背景から遠ざけて）、背景とのコントラスト比を 4.5 以上にします。白い文字を乗せても、WCAG 1.4.3 の基準を満たします。元の色がすでに十分濃い場合（背景との比が 8 以上）は、それ以上濃くすると黒（暗い背景では白）に近づくので、背景に近づけて淡くします。どちらの向きでも、元の色との OKLCH の明るさの差をおよそ 0.05 以上にします
+- **`'subtle'`**: 控えめな色。ホバー・選択中の項目の背景など、背景に近い面に使います。彩度は元の色の 1/4 です。背景とのコントラスト比を、明るい背景では 1.1、暗い背景では 1.3 にします（暗い背景では差が見えにくいので、離しています）
+
+```ts
+createAccentColor('#2563eb'); // '#971ca7'
+createAccentColor('#2563eb', { emphasis: 'subtle' }); // '#ffefff'
+createAccentColor('#60a5fa', { background: '#121212' }); // '#d495f1'
+createAccentColor('#2563eb', { hue: 'complementary' }); // '#835a00'
+```
+
+使うときに知っておくこと
+
+- `'subtle'` の面の上の文字は、白と黒の読みやすい方（`chooseReadableColor`）にしてください。`'strong'` の色の文字を乗せると、背景とのコントラスト比 4.5 から面の分だけ下がり、WCAG 1.4.3 の基準に届かないことがあります
+- `'strong'` は、元の色の背景との比が 8 の前後で、濃くするか淡くするかが入れ替わります。比がわずかに違う2つの色で、アクセントの明るさが大きく違うことがあります
+- 無彩色（白・灰色・黒）は色相を持たないので、明るさだけが違う無彩色になります。色の付いたアクセントが欲しい場合は、色の付いた色を渡してください
+- 明るさの差（およそ 0.05 以上）は、sRGB に収めるときに少し変わることがあります。背景とのコントラスト比は、収めた後の色で確かめています
+- プライマリ・セカンダリ・中立色などを揃えた配色全体が欲しい場合は、[@material/material-color-utilities](https://www.npmjs.com/package/@material/material-color-utilities) が使えます。`createAccentColor` は、利用者が選んだ色をそのまま活かして、それに合う1色を返します
+
+| オプション    | 型                       | 説明                                                                                        |
+| ------------- | ------------------------ | ------------------------------------------------------------------------------------------- |
+| `emphasis?`   | `AccentEmphasis`         | `'strong'`（目立たせる色）か `'subtle'`（控えめな色）。デフォルトは `'strong'`              |
+| `background?` | `AbsoluteColor`          | アクセントカラーを置く背景の色。デフォルトは `'#ffffff'`                                    |
+| `hue?`        | `number \| ColorHarmony` | 元の色から回す色相の角度（度）。調和の関係の名前でも指定できる（下の表）。デフォルトは `60` |
+
+`hue` の選び方の目安です。どれを選んでも、明るさは `emphasis` の規則で決めます。
+
+| `hue`                  | 角度 | 選ぶとき                                       |
+| ---------------------- | ---- | ---------------------------------------------- |
+| 省略                   | 60°  | プライマリと組で使って、なじみつつ目立たせたい |
+| `'analogous'`          | 30°  | プライマリになじむ控えめなアクセントにしたい   |
+| `'square'`             | 90°  | 三分割と類似色の間                             |
+| `'triadic'`            | 120° | はっきり違う色にしたい                         |
+| `'splitComplementary'` | 150° | 対比を出しつつ、補色より穏やかにしたい         |
+| `'complementary'`      | 180° | 最も強く対比させたい                           |
+
+#### `createHarmonyColors`
+
+```ts
+createHarmonyColors(color: AbsoluteColor, options?: CreateHarmonyColorsOptions): HexColor[] | undefined
+```
+
+色相環の上で調和の関係にある色を、OKLCH で色相を回して作ります。元の色を先頭に、元の色からの角度の小さい順に並べます。明るさと彩度は元の色のままです。無彩色（白・灰色・黒）は色相を持たないので、同じ色が並びます。`color` を読み取れない場合は `undefined` を返します。
+
+```ts
+createHarmonyColors('#2563eb'); // ['#2563eb', '#d10e2e', '#008b00']
+createHarmonyColors('#2563eb', { harmony: 'analogous' }); // ['#2563eb', '#7a49df', '#007bb2']
+```
+
+明るさを変えないので、背景とのコントラストは保証しません。背景の上で見分けられるようにしたい場合は、`ensureContrast` と組み合わせてください。
+
+| オプション | 型             | 説明                                 |
+| ---------- | -------------- | ------------------------------------ |
+| `harmony?` | `ColorHarmony` | 調和の関係。デフォルトは `'triadic'` |
+
+`harmony` の選び方の目安です。
+
+| `harmony`              | 返す色（元の色からの角度） | 選ぶとき                                                                                           |
+| ---------------------- | -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `'analogous'`          | 0°・30°・330°              | なじませたい、落ち着いた統一感を出したい。色によっては見分けにくいので、区別が要る用途には向かない |
+| `'complementary'`      | 0°・180°                   | 2色をはっきり対比させたい。赤と緑のように、色覚の多様性で見分けにくい組み合わせになることがある    |
+| `'splitComplementary'` | 0°・150°・210°             | 対比を出しつつ、補色より穏やかにしたい                                                             |
+| `'triadic'`（既定）    | 0°・120°・240°             | 3つのものを見分けたい（グラフの系列、カテゴリーの色分けなど）                                      |
+| `'square'`             | 0°・90°・180°・270°        | 4つのものを見分けたい。にぎやかになりやすいので、1色を主にし、ほかは控えめに使う                   |
+
 #### 型
 
-| 型                              | 説明                                                       |
-| ------------------------------- | ---------------------------------------------------------- |
-| `CreateColorScaleOptions<S>`    | `createColorScale` のオプション                            |
-| `DefaultColorScaleStep`         | `createColorScale` の既定の段階（`50 \| 100 \| … \| 950`） |
-| `AdjustColorOptions`            | `adjustColor` のオプション                                 |
-| `CalculateContrastRatioOptions` | `calculateContrastRatio` のオプション                      |
-| `ChooseReadableColorOptions`    | `chooseReadableColor` のオプション                         |
+| 型                              | 説明                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `CreateColorScaleOptions<S>`    | `createColorScale` のオプション                                                                        |
+| `DefaultColorScaleStep`         | `createColorScale` の既定の段階（`50 \| 100 \| … \| 950`）                                             |
+| `AdjustColorOptions`            | `adjustColor` のオプション                                                                             |
+| `CalculateContrastRatioOptions` | `calculateContrastRatio` のオプション                                                                  |
+| `ChooseReadableColorOptions`    | `chooseReadableColor` のオプション                                                                     |
+| `CreateAccentColorOptions`      | `createAccentColor` のオプション                                                                       |
+| `AccentEmphasis`                | アクセントカラーの強さ（`'strong' \| 'subtle'`）                                                       |
+| `CreateHarmonyColorsOptions`    | `createHarmonyColors` のオプション                                                                     |
+| `ColorHarmony`                  | 調和の関係（`'analogous' \| 'complementary' \| 'splitComplementary' \| 'triadic' \| 'square'`）        |
+| `AbsoluteColor`                 | 色の関数が受け取る具体的な色（`HexColor \| FunctionalColor \| NamedColor`。`@fringeworks/types` の型） |
+| `HexColor`                      | 16進数の色（`#${string}`）。色の関数が返す色（`@fringeworks/types` の型）                              |
+| `FunctionalColor`               | `rgb()`・`hsl()`・`oklch()` などの色の関数で書いた色（`@fringeworks/types` の型）                      |
+| `NamedColor`                    | CSS の色の名前（148 個の名前と `transparent`。`@fringeworks/types` の型）                              |
 
 ### イージング
 
